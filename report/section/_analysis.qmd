@@ -1,0 +1,77 @@
+# Methods *(optional, only if you have models)*
+
+::: {.callout-note}
+## When to Include This Section
+
+Include a Methods section if you:
+
+- Apply statistical models (linear regression, logistic regression, etc.)
+- Perform hypothesis testing
+- Use machine learning algorithms
+- Conduct advanced statistical analyses
+
+If your project is primarily exploratory (descriptive statistics and visualizations only), you can skip this section or keep it minimal.
+:::
+
+Outline the statistical methods or models selected, along with the rationale for their selection.
+
+**Important**: Don't just show model output, **explain your choices**:
+
+- **Why** did you choose this particular method?
+- **What** assumptions does it make, and do your data meet them?
+- **How** does this method help answer your research questions?
+
+```{python}
+#| label: initial-analysis
+
+from sklearn.linear_model import LinearRegression
+import numpy as np
+import pandas as pd
+
+model = LinearRegression()
+
+# Prepare the data (using dummy variables for categorical instructor variable)
+X = np.array(pd.get_dummies(data_clean[["instructor"]], drop_first=True))
+y = np.array(data_clean["performance"])
+
+# Fit the model
+model.fit(X, y)
+
+print("=== Linear Regression Results ===")
+print(f"Coefficients: {model.coef_}")
+print(f"Intercept: {model.intercept_:.4f}")
+print(f"R-squared: {model.score(X, y):.4f}")
+```
+
+::: {.callout-important}
+## Interpretation is Essential!
+
+After showing model results, you **must interpret them**:
+
+**Example interpretation:**
+
+"The Poisson regression model identifies three significant predictors of insurance claim frequency. Vehicle age shows a positive coefficient (β = 0.08, p < 0.01), indicating that each additional year of vehicle age increases expected claims by approximately 8%. Driver age has a negative coefficient (β = -0.02, p < 0.001), meaning older drivers file fewer claims. The urban location dummy variable (β = 0.15, p < 0.05) suggests urban drivers have 15% higher claim rates than rural drivers.
+
+However, the model's pseudo-R² of 0.22 indicates that these predictors explain only 22% of claim variation. Unobserved factors like driving behavior, road conditions, and individual risk tolerance likely account for the remaining variation. This suggests that while demographic variables are useful for pricing, insurers should not rely solely on them for risk assessment."
+
+**Remember**: Model output without interpretation demonstrates technical skills but not understanding!
+:::
+
+# Findings and Discussion
+
+Provide your results or observations from applying statistical methods, then **discuss them thoroughly** in the context of your research questions and project goals.
+
+::: {.callout-tip}
+## Structure Your Discussion
+
+A good discussion:
+
+1. **States the finding** clearly (reference tables/figures)
+2. **Interprets the result** (what does it mean?)
+3. **Connects to research questions** (how does it answer your questions?)
+4. **Relates to domain knowledge** (does it align with theory or prior research?)
+5. **Acknowledges limitations** (what are the caveats?)
+6. **Suggests implications** (what should we do with this information?)
+
+**Example**: "Our regression analysis shows that experience significantly predicts performance (β = 0.01, p < 0.001), supporting our hypothesis that skill develops over time. This aligns with learning curve theory in organizational psychology and suggests that training programs should emphasize sustained practice. However, the wide confidence interval (95% CI: [0.005, 0.015]) indicates substantial individual variation, meaning experience alone cannot guarantee high performance."
+:::

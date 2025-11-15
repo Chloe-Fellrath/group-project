@@ -1,0 +1,21 @@
+Headings: # for H1, ## for H2, ### for H3
+Bold: **text**
+Italics: *text*
+Lists:
+- item 1
+- item 2
+Code chunks:
+```{python}
+import pandas as pd
+
+df = pd.read_csv("filename.csv")
+df.head()
+Plots & Figures:
+```markdown
+```{python}
+import matplotlib.pyplot as plt
+
+plt.hist(df['Revenue'])
+plt.show()
+
+Render report: quarto render report.qmd

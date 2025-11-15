@@ -1,0 +1,380 @@
+# EDA
+
+::: {.callout-tip}
+## Exploratory Data Analysis (EDA) Purpose
+
+The goal of EDA is to:
+
+1. **Understand** the structure and patterns in your data
+2. **Identify** relationships between variables
+3. **Detect** anomalies, outliers, and data quality issues
+4. **Generate** hypotheses for further analysis
+5. **Choose** appropriate statistical methods
+
+Good EDA combines **visualizations** + **summary statistics** + **domain knowledge**.
+:::
+
+::: {.callout-important}
+## Interpretation is Key!
+
+**Creating plots is only half the work.** The most important part of EDA is **interpreting** what your visualizations reveal about the data.
+
+For **every plot** you create, you must:
+
+- **Describe** what the plot shows (patterns, trends, distributions)
+- **Explain** why these patterns matter for your research questions
+- **Connect** findings to your project goals and domain context
+- **Justify** subsequent analysis decisions based on these insights
+
+**A plot without interpretation is meaningless.** Your grade depends heavily on the quality of your interpretations, not just the number of plots you create.
+:::
+
+## Univariate Analysis
+
+Examine each variable individually to understand its distribution, central tendency, and spread.
+
+::: {.panel-tabset}
+
+## Distribution Plot
+
+```{python}
+#| label: fig-performance-dist
+#| fig-cap: "Distribution of performance scores showing approximately normal distribution"
+# Code visibility controlled by format settings in report.qmd
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+import numpy as np
+
+# Set publication-quality style
+sns.set_theme(style="whitegrid", context="notebook",
+              palette="colorblind", font_scale=1.1)
+
+# Create dummy data for demonstration
+np.random.seed(42)
+dummy_performance = pd.DataFrame({
+    "instructor": np.random.choice(["Ilia", "Jane", "John"], size=200),
+    "performance": np.random.normal(0.90, 0.05, size=200).clip(0, 1)
+})
+
+# Create figure
+fig, ax = plt.subplots(figsize=(8, 5))
+
+# Histogram with KDE
+sns.histplot(data=dummy_performance, x="performance", kde=True,
+             bins=30, color='steelblue', alpha=0.6, ax=ax,
+             edgecolor='black', linewidth=0.5)
+
+# Customize plot
+ax.set_title("Distribution of Student Performance Scores",
+             fontsize=14, fontweight='bold', pad=15)
+ax.set_xlabel("Performance Score", fontsize=12)
+ax.set_ylabel("Frequency", fontsize=12)
+ax.grid(True, alpha=0.3, linestyle='--')
+
+# Add mean line
+mean_perf = dummy_performance["performance"].mean()
+ax.axvline(mean_perf, color='red', linestyle='--', linewidth=2,
+           label=f'Mean = {mean_perf:.3f}')
+ax.legend(fontsize=10)
+
+plt.tight_layout()
+plt.show()
+```
+
+## Summary Statistics
+
+```{python}
+#| label: tbl-summary-stats
+#| tbl-cap: "Summary statistics for performance scores"
+# Code visibility controlled by format settings in report.qmd
+
+# Display comprehensive summary statistics
+summary_stats = dummy_performance["performance"].describe()
+print("\n=== Performance Summary Statistics ===")
+print(summary_stats.to_string())
+
+# Additional statistics
+print(f"\nSkewness: {dummy_performance['performance'].skew():.3f}")
+print(f"Kurtosis: {dummy_performance['performance'].kurtosis():.3f}")
+```
+
+## Box Plot
+
+```{python}
+#| label: fig-performance-box
+#| fig-cap: "Box plot showing the five-number summary and outliers"
+# Code visibility controlled by format settings in report.qmd
+
+fig, ax = plt.subplots(figsize=(6, 4))
+
+# Box plot
+bp = ax.boxplot(dummy_performance["performance"], vert=True, patch_artist=True,
+                labels=["Performance"],
+                boxprops=dict(facecolor='lightblue', edgecolor='black', linewidth=1.5),
+                medianprops=dict(color='red', linewidth=2),
+                whiskerprops=dict(color='black', linewidth=1.5),
+                capprops=dict(color='black', linewidth=1.5))
+
+ax.set_title("Performance Score Distribution (Box Plot)",
+             fontsize=13, fontweight='bold', pad=15)
+ax.set_ylabel("Performance Score", fontsize=11)
+ax.grid(True, axis='y', alpha=0.3, linestyle='--')
+
+plt.tight_layout()
+plt.show()
+```
+
+:::
+
+## Bivariate Analysis
+
+Explore relationships between two variables.
+
+Our univariate analysis in @fig-performance-dist revealed that performance scores follow an approximately normal distribution with a mean of 0.90. The box plot (@fig-performance-box) confirmed this finding and helped identify a few outliers at the lower end of the distribution.
+
+::: {.callout-tip}
+## How to Reference Figures
+
+Use `@fig-label` syntax to reference figures in your text. Quarto automatically numbers them and creates clickable links.
+
+**Examples with figures in this template:**
+
+- `@fig-performance-dist` → See @fig-performance-dist for details
+- `@fig-correlation-matrix` → As shown in @fig-correlation-matrix
+- `@tbl-anova-test` → The ANOVA results in @tbl-anova-test
+
+**Why reference figures?**
+
+1. Automatic numbering (updates if you reorder)
+2. Clickable links in HTML output
+3. Professional academic writing standard
+4. Helps readers find the relevant visualization
+
+**Example usage in text:**
+
+"The distribution shown in @fig-performance-dist indicates..."
+
+"As seen in @fig-correlation-matrix, there is a strong positive correlation..."
+:::
+
+Now let's examine how performance varies across different instructors.
+
+::: {.panel-tabset}
+
+## Grouped Comparison
+
+```{python}
+#| label: fig-performance-by-instructor
+#| fig-cap: "Performance scores grouped by instructor showing variation across instructors"
+# Code visibility controlled by format settings in report.qmd
+
+fig, ax = plt.subplots(figsize=(8, 5))
+
+# Violin plot with individual points
+sns.violinplot(data=dummy_performance, x="instructor", y="performance",
+               ax=ax, inner="box", palette="Set2", linewidth=1.5,
+               edgecolor='black')
+
+# Overlay individual points
+sns.swarmplot(data=dummy_performance, x="instructor", y="performance",
+              ax=ax, color='black', alpha=0.3, size=3)
+
+# Customize
+ax.set_title("Performance Scores by Instructor",
+             fontsize=14, fontweight='bold', pad=15)
+ax.set_xlabel("Instructor", fontsize=12)
+ax.set_ylabel("Performance Score", fontsize=12)
+ax.grid(True, axis='y', alpha=0.3, linestyle='--')
+
+plt.tight_layout()
+plt.show()
+```
+
+## Statistical Test
+
+```{python}
+#| label: tbl-anova-test
+#| tbl-cap: "ANOVA test results for performance differences across instructors"
+# Code visibility controlled by format settings in report.qmd
+
+from scipy import stats
+
+# Group data by instructor
+groups = [group["performance"].values
+          for name, group in dummy_performance.groupby("instructor")]
+
+# Perform ANOVA
+f_stat, p_value = stats.f_oneway(*groups)
+
+print("\n=== ANOVA Test Results ===")
+print(f"F-statistic: {f_stat:.4f}")
+print(f"P-value: {p_value:.4f}")
+print(f"\nInterpretation: {'Significant' if p_value < 0.05 else 'Not significant'} difference at α=0.05")
+
+# Group means
+print("\n=== Group Means ===")
+print(dummy_performance.groupby("instructor")["performance"].mean().to_string())
+```
+
+:::
+
+::: {.callout-important}
+## Plot Quality Requirements
+
+Every plot in your report should have:
+
+✓ **Clear title** that explains what's being shown
+✓ **Labeled axes** with units when applicable
+✓ **Legend** if multiple groups/series are shown
+✓ **Appropriate color scheme** (colorblind-friendly)
+✓ **Proper sizing** (readable text, not too small/large)
+✓ **Figure caption** using `fig-cap` option
+
+**Poor plots = Poor grades!** Take time to make your visualizations publication-quality.
+:::
+
+## Correlation Analysis
+
+::: {.panel-tabset}
+
+## Correlation Heatmap
+
+```{python}
+#| label: fig-correlation-matrix
+#| fig-cap: "Correlation matrix showing relationships between numeric variables"
+# Code visibility controlled by format settings in report.qmd
+
+# Create dummy dataset with multiple numeric variables
+np.random.seed(42)
+n = 200
+dummy_data = pd.DataFrame({
+    'Age': np.random.randint(20, 60, n),
+    'Experience': np.random.randint(0, 30, n),
+    'Performance': np.random.normal(0.85, 0.1, n).clip(0, 1),
+    'Salary': np.random.normal(60000, 20000, n)
+})
+
+# Add some correlations
+dummy_data['Salary'] = 40000 + dummy_data['Experience'] * 1000 + np.random.normal(0, 5000, n)
+dummy_data['Performance'] = 0.6 + dummy_data['Experience'] * 0.01 + np.random.normal(0, 0.1, n)
+dummy_data['Performance'] = dummy_data['Performance'].clip(0, 1)
+
+# Calculate correlation matrix
+corr_matrix = dummy_data.corr()
+
+# Create heatmap
+fig, ax = plt.subplots(figsize=(7, 6))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0,
+            square=True, linewidths=1, cbar_kws={"shrink": 0.8},
+            fmt='.3f', ax=ax, vmin=-1, vmax=1)
+
+ax.set_title("Correlation Matrix of Numeric Variables",
+             fontsize=14, fontweight='bold', pad=15)
+
+plt.tight_layout()
+plt.show()
+```
+
+## Scatter Plot
+
+```{python}
+#| label: fig-scatter-experience-performance
+#| fig-cap: "Scatter plot showing positive relationship between experience and performance"
+# Code visibility controlled by format settings in report.qmd
+
+fig, ax = plt.subplots(figsize=(8, 5))
+
+# Scatter plot with regression line
+sns.regplot(data=dummy_data, x='Experience', y='Performance',
+            ax=ax, scatter_kws={'alpha': 0.5, 's': 50, 'edgecolor': 'black'},
+            line_kws={'color': 'red', 'linewidth': 2})
+
+ax.set_title("Experience vs Performance",
+             fontsize=14, fontweight='bold', pad=15)
+ax.set_xlabel("Years of Experience", fontsize=12)
+ax.set_ylabel("Performance Score", fontsize=12)
+ax.grid(True, alpha=0.3, linestyle='--')
+
+# Add correlation coefficient
+corr = dummy_data['Experience'].corr(dummy_data['Performance'])
+ax.text(0.05, 0.95, f'Correlation: {corr:.3f}',
+        transform=ax.transAxes, fontsize=11,
+        verticalalignment='top',
+        bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+
+plt.tight_layout()
+plt.show()
+```
+
+:::
+
+## Key Findings
+
+**Remember: Interpretation is more important than the plots themselves!** Each finding below not only states *what* we observe but also *why* it matters and *what* it means for our analysis.
+
+Summarize the main insights from your exploratory analysis. **Always reference your figures when discussing findings and provide thorough interpretation!**
+
+1. **Distribution patterns**: The performance scores shown in @fig-performance-dist follow an approximately normal distribution with a mean of `{python} f'{dummy_performance["performance"].mean():.2f}'` and standard deviation of `{python} f'{dummy_performance["performance"].std():.2f}'`.
+
+   **Interpretation**: This normal distribution suggests that most students perform around the average, with fewer students at the extremes (very high or very low scores). The relatively small standard deviation indicates consistent performance across the group. This pattern is typical in educational settings and suggests that the assessment was well-calibrated meaning not too easy (which would cause ceiling effects) nor too difficult (which would cause floor effects). The normality assumption also validates the use of parametric statistical tests for subsequent analyses.
+
+2. **Outliers and data quality**: The box plot (@fig-performance-box) reveals minimal outliers, with only a few observations falling below the lower whisker.
+
+   **Interpretation**: The scarcity of outliers suggests good data quality and consistent measurement. The few low-performing outliers warrant further investigation - they could represent students who faced unusual circumstances or measurement errors. However, their small number means they are unlikely to significantly impact our overall conclusions. This finding gives us confidence in proceeding with the full dataset without extensive outlier removal.
+
+3. **Group differences**: @fig-performance-by-instructor demonstrates noticeable variation in performance across different instructors, with some instructors showing higher median scores than others. The ANOVA test (@tbl-anova-test) confirms these differences are `{python} 'statistically significant (p < 0.05)' if p_value < 0.05 else 'not statistically significant (p ≥ 0.05)'`.
+
+   **Interpretation**: `{python} 'The significant differences across instructors raise important questions about teaching effectiveness, grading consistency, or student assignment to sections. This finding suggests that "instructor" should be included as a control variable in any regression models predicting performance.' if p_value < 0.05 else 'The lack of significant differences suggests that instructor assignment does not substantially impact performance, or that grading standards are well-harmonized across sections.'` It also indicates that comparing students across different sections requires careful consideration. From a policy perspective, this might warrant investigating whether certain teaching methods are more effective or whether grading standards need to be harmonized across sections.
+
+4. **Relationships**: The correlation matrix (@fig-correlation-matrix) reveals several interesting patterns:
+   - Strong positive correlation (r = `{python} f'{corr_matrix.loc["Experience", "Salary"]:.2f}'`) between Experience and Salary
+   - Moderate positive correlation (r = `{python} f'{corr_matrix.loc["Experience", "Performance"]:.2f}'`) between Experience and Performance
+   - Weak correlation (r = `{python} f'{corr_matrix.loc["Age", "Performance"]:.2f}'`) between Age and Performance
+
+   **Interpretation**: The Experience-Salary correlation aligns with economic theory that experience is rewarded in labor markets. The Experience-Performance correlation suggests that experience contributes to better performance, though other factors clearly matter as well. Interestingly, Age shows minimal correlation with Performance, suggesting that chronological age alone doesn't predict success - what matters is relevant experience. These patterns will guide our variable selection for predictive modeling, favoring Experience over Age as a key predictor.
+
+5. **Experience-Performance relationship**: @fig-scatter-experience-performance clearly shows a positive linear relationship, with more experienced individuals tending to have higher performance scores. The correlation coefficient is `{python} f'{corr:.2f}'`.
+
+   **Interpretation**: The linear relationship visible in the scatter plot confirms that experience has a consistent, positive effect on performance. However, the substantial scatter around the regression line indicates that experience alone doesn't determine performance - individual differences and other factors play important roles. This suggests that while experience is valuable, organizations shouldn't rely solely on it when making hiring or promotion decisions.
+
+::: {.callout-warning}
+## Common Mistakes in Interpretation
+
+**Observation (not interpretation):** "The histogram shows a normal distribution."
+**Why it's insufficient:** This only describes what you see - it's an observation, not an interpretation. You need to explain what it *means* and *why it matters*.
+
+**Good interpretation (observation + story):** "The histogram shows a normal distribution (mean = 0.90, sd = 0.05), which indicates consistent performance across students. This pattern validates the use of parametric statistical tests in our subsequent analysis. The tight distribution suggests the assessment was well-calibrated, effectively distinguishing between ability levels without ceiling or floor effects that would compress scores."
+
+**Remember:**
+
+- **Observation** = What you see in the data/plot
+- **Interpretation** = The story behind it - what it means, why it matters, what implications it has
+- **Always do both!** State the observation, then interpret its significance.
+:::
+
+::: {.callout-warning}
+## Common Mistake: Not Referencing Figures
+
+**Bad:** "The histogram shows a normal distribution."
+**Good:** "As shown in @fig-performance-dist, the histogram reveals a normal distribution."
+
+**Why?**
+
+- Helps readers locate the relevant visualization
+- Creates professional, academic-style writing
+- Enables automatic figure numbering and links
+:::
+
+::: {.callout-tip}
+## From EDA to Analysis
+
+Use your EDA findings to:
+
+- **Refine research questions** based on observed patterns
+- **Select appropriate statistical methods** based on data distributions
+- **Identify variables** for inclusion in models
+- **Justify transformations** (e.g., log transform for skewed data)
+- **Set expectations** for what you might find in formal analysis
+:::

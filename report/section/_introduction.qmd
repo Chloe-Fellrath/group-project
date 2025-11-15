@@ -1,0 +1,80 @@
+#Gender Representation in Music
+##*How Has the Diversity of Artists Evolved in Top Charts?*
+
+##Introduction
+###**Background**
+In recent years, discussions about diversity and representation have gained significant visibility across industries. Music plays a central role in modern culture, and platforms like Spotify now collect extensive data on song characteristics and popularity. Despite the undeniable impact of women and gender-diverse artists throughout music history, data suggests that gender disparities persist, particularly in production, chart rankings, and streaming exposure. Examining these disparities is crucial to understanding how structural factors influence the music we consume and the artists who gain recognition.
+
+We chose this topic because it connects social relevance with quantitative analysis, allowing us to apply data science methods to explore an issue that is both culturally and statistically meaningful. It highlights how data analytics can reveal hidden biases and long-term trends in creative industries.
+
+Building on this motivation, our project explores gender representation in music among performing artists appearing in Billboard Top Charts using publicly available data retrieved through Spotify. By applying data science methods from data acquisition and cleaning to analysis and visualization, we seek to uncover patterns and trends that illustrate how gender diversity among artists has evolved across genres and decades. This analysis not only contributes to ongoing discussions about equality in the music industry but also demonstrates how data-driven insights can support social awareness and change.
+
+###**Objectives**
+
+The project aims to conduct an exploratory data analysis to:
+
+- Quantify the gender distribution of artists in top charts over time using available music datasets.
+- Examine whether representation varies across genres and popularity levels.
+- Visualize how the diversity of artists has evolved from the 1960s to the present.
+- Communicate results through clear visualizations and an interpretive analysis grounded in data science methods.
+
+###**Research questions**
+
+- How has gender representation among music artists evolved over the years?
+- Are there differences in gender representation across genres (e.g., pop, rock, hip-hop)?
+- Is there a relationship between an artist's popularity and gender?
+- Have certain decades shown more progress in representation than others?
+
+## Related Work
+
+Discuss relevant academic papers, methodologies, and prior research that informed your project. Include both domain-specific literature (actuarial science, insurance, finance) and methodological references (statistical methods, data science techniques).
+
+**Example structure:**
+
+- **Domain literature**: Academic papers on your topic (e.g., claims analysis, mortality modeling, risk assessment)
+- **Methodological references**: Statistical methods or data science techniques you applied
+- **Course materials**: @azizi2025dsas provides Python-based data science techniques for actuarial applications
+- **Technical resources**: Books like @mckinney2022python and @vanderplas2016python for implementation details
+
+::: {.callout-tip}
+## Academic Citations Recommended
+
+Your Related Work section can have **more value when including academic papers (further evidence)** from peer-reviewed journals or conference proceedings, not just books or course materials. Use Google Scholar, university library databases, or specialized actuarial journals to find relevant papers.
+
+**Recommended sources:**
+
+- Academic journals (Insurance: Mathematics and Economics, ASTIN Bulletin, Journal of Risk and Insurance)
+- Conference papers (actuarial conferences, data science symposiums)
+- Working papers from researchers in your field
+
+**Citation example**: "@azizi2022realestate investigated multi-modal approaches to real estate rental price prediction, demonstrating that models combining tabular data with visual information (property images and satellite imagery) outperform traditional methods relying solely on structured features. Their supervised learning framework fused dedicated neural network branches for each data type, achieving superior performance on 11,105 Swiss rental listings." *(This reference is already in your `references.bib` file and can be cited as `@azizi2022realestate`)*
+:::
+
+::: {.callout-note}
+## Citing Sources
+
+Always cite your sources properly! In Quarto, use `@citation_key` syntax. The bibliography will be automatically generated from the `references.bib` file.
+
+**Example**: `@azizi2025dsas` renders as: @azizi2025dsas
+
+Add entries to `references.bib` in [BibTeX](https://www.bibtex.com/g/bibtex-format/) format for all sources you cite (every article normally generates BibTeX, otherwise search an online tool that does it).
+:::
+
+::: {.callout-warning}
+## Avoiding Plagiarism
+
+Make sure to cite all sources that informed your work, including:
+
+- Datasets (with URLs)
+- Methods or techniques from papers or tutorials
+- Code snippets adapted from online resources
+- Inspiration from existing analyses
+
+When in doubt, cite it!
+:::
+
+::: {.callout-caution}
+## Common Mistake
+
+Don't just list your research questions without context. Explain **why** each question matters and **how** it relates to your dataset and project goals.
+:::

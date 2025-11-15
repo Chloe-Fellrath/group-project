@@ -1,0 +1,226 @@
+# Data
+
+## Sources
+Describe the sources of your data, such as public datasets, API collections, or scraped data.
+
+::: {.callout-important}
+## Data Source Documentation
+
+Always include the **URL** where the data can be accessed. This is essential for reproducibility and evaluation. For example "Data source: [Kaggle Insurance Dataset](https://www.kaggle.com/datasets/example)"". Also mention when the data was accessed.
+:::
+
+## Description
+Summarize the main features of the dataset, including the types of variables, their formats, and any relevant metadata.
+
+::: {.callout-note}
+## Dataset Overview Template
+
+Provide a clear summary:
+
+- **Number of observations**: X rows
+- **Number of variables**: Y columns
+- **Time period**: Start date to end date
+- **Geographic coverage**: Region/Country
+- **Key variables**: List the most important variables for your analysis
+:::
+
+## Loading Data
+
+::: {.callout-tip}
+## Loading Data Best Practices
+
+1. **Use relative paths** via `project_root` for reproducibility
+2. **Check data types** after loading
+3. **Inspect the first few rows** to verify correct loading
+4. **Document any loading parameters** (e.g., encoding, delimiter)
+
+**Important**: Do not change the data loading approach shown below. The template uses `project_root` from the setup chunk to ensure your code works regardless of where the report is run from.
+:::
+
+```{python}
+#| label: load-data
+# Code visibility controlled by format settings in report.qmd
+#| output: true
+
+"""Example of loading data using pandas with proper path handling."""
+
+import pandas as pd
+from IPython.display import display
+from quarto_runtime import project_root
+
+# Define the path to raw data using project_root
+# This ensures the code works regardless of where it's run from
+raw_data_path = project_root / "data" / "raw" / "data_raw.csv"
+
+# Load the data
+data = pd.read_csv(raw_data_path, skipinitialspace=True)
+
+# Basic data inspection
+print(f"Dataset shape: {data.shape[0]} rows × {data.shape[1]} columns")
+print(f"\nColumn names: {list(data.columns)}")
+print(f"\nData types:\n{data.dtypes}")
+
+# Display first few rows
+print("\nFirst 5 rows:")
+display(data.head())
+```
+
+::: {.callout-tip}
+## Alternative Data Sources
+
+Depending on your project, you might load data from:
+
+- **CSV files**: `pd.read_csv(filepath)`
+- **Excel files**: `pd.read_excel(filepath, sheet_name='Sheet1')`
+- **JSON files**: `pd.read_json(filepath)`
+- **APIs**: Using `requests` library + `pd.DataFrame(data)`
+- **Databases**: Using `pd.read_sql(query, connection)`
+- **Web scraping**: Using `beautifulsoup4` or `scrapy`
+
+Always document your data acquisition process!
+:::
+
+## Wrangling
+
+### General Transformations
+Document the data preprocessing steps taken, including cleaning, transformation, and any merging of datasets.
+
+::: {.callout-caution}
+## Document Your Transformations
+
+Every transformation should be:
+
+1. **Justified**: Explain why it's needed
+2. **Documented**: Clear code comments
+3. **Reproducible**: Can be run from scratch
+4. **Validated**: Check the results make sense
+:::
+
+### Spotting Mistakes and Missing Data
+Discuss any identified mistakes or issues with missing data and describe your approach to handling them.
+
+::: {.callout-warning}
+## Missing Data Strategies
+
+Different approaches for different situations:
+
+- **Deletion**: Remove rows/columns with missing values (when few missing)
+- **Imputation**: Fill with mean, median, mode, or advanced methods
+- **Flagging**: Create indicator variables for missingness
+- **Model-based**: Use algorithms that handle missing values
+
+**Document your choice** and justify why it's appropriate for your data!
+:::
+
+### Listing Anomalies and Outliers
+Identify any anomalies or outliers discovered, along with your approach to assessing their impact.
+
+::: {.callout-tip}
+## Outlier Detection Methods
+
+- **Visual inspection**: Box plots, scatter plots
+- **Statistical methods**: Z-scores, IQR method
+- **Domain knowledge**: What values are impossible or implausible?
+
+Remember: Not all outliers should be removed! They might be:
+
+- **Errors**: Data entry mistakes (should be corrected/removed)
+- **Valid extremes**: Real but unusual observations (should be kept)
+- **Key insights**: The most interesting part of your data!
+:::
+
+```{python}
+#| label: data-cleaning
+# Code visibility controlled by format settings in report.qmd
+#| output: true
+
+"""Example of data cleaning with pandas - proper transformations."""
+
+import pandas as pd
+import numpy as np
+from IPython.display import display
+from quarto_runtime import project_root
+
+# Load raw data using the same approach as above
+raw_data = project_root / "data" / "raw" / "data_raw.csv"
+data = pd.read_csv(raw_data, skipinitialspace=True)
+
+# Clean column names (lowercase, remove spaces)
+data.columns = data.columns.str.strip().str.lower()
+
+# Check for missing values
+print("Missing values per column:")
+print(data.isnull().sum())
+
+# Data cleaning pipeline
+data_clean = (
+    data
+    # Remove rows with critical missing values
+    .dropna(subset=["behavior", "performance"])
+    # Convert categorical variables
+    .assign(
+        behavior=lambda df: df["behavior"].astype("category"),
+        instructor=lambda df: df["instructor"].astype("category"),
+    )
+    # Ensure numeric columns are proper type
+    .assign(
+        performance=lambda df: pd.to_numeric(df["performance"], errors='coerce')
+    )
+)
+
+print(f"\nOriginal data shape: {data.shape}")
+print(f"Cleaned data shape: {data_clean.shape}")
+print(f"Rows removed: {data.shape[0] - data_clean.shape[0]}")
+
+# Display cleaned data summary
+print("\nCleaned data summary:")
+display(data_clean.describe(include='all'))
+
+# Save cleaned data for later use (using project_root path)
+processed_path = project_root / "data" / "processed" / "data_processed.csv"
+data_clean.to_csv(processed_path, index=False)
+```
+
+After cleaning, our dataset contains **`{python} data_clean.shape[0]` observations** across **`{python} data_clean.shape[1]` variables**. We removed **`{python} data.shape[0] - data_clean.shape[0]` rows** due to missing values in critical variables.
+
+::: {.callout-tip}
+## Inline Code for Dynamic Results
+
+Notice the inline code in the paragraph above uses Python expressions wrapped in backticks with `{python}` prefix to insert computed values directly into your text. This ensures your narrative automatically updates when data changes.
+
+**Working examples in this document:**
+
+- The mean performance score is `{python} f'{data_clean["performance"].mean():.3f}'`
+- We analyzed data from `{python} data_clean['instructor'].nunique()` different instructors
+
+**To use inline code:** Write your Python expression between backticks with the {python} prefix, like this (without the backslashes): `\{python\} your_expression_here`
+
+This is better than hard-coding numbers, which can become outdated if you update your data!
+:::
+
+::: {.callout-important}
+## Don't Forget to Interpret!
+
+After showing your data cleaning code, **explain your decisions**:
+
+- **Why** did you remove certain rows or handle missing values this way?
+- **What** impact do these choices have on your analysis?
+- **How** do your cleaning decisions align with your research questions?
+
+Example: "We removed rows with missing performance scores (N=15, 7.5% of data) because these are our primary outcome variable and cannot be reliably imputed. This minimal data loss is acceptable and preserves the integrity of our performance analysis."
+:::
+
+::: {.callout-note}
+## Data Cleaning Checklist
+
+Before moving to analysis, verify:
+
+- ✓ All column names are clean and consistent
+- ✓ Data types are appropriate for each variable
+- ✓ Missing values are identified and handled
+- ✓ Outliers are investigated and documented
+- ✓ Categorical variables are properly encoded
+- ✓ Duplicate rows are checked and removed if needed
+- ✓ Date/time variables are in proper format
+- ✓ Cleaned data is saved for reproducibility
+:::
