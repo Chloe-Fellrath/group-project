@@ -1,4 +1,4 @@
-#!/Users/chloefellrath/PycharmProjects/quarto/.venv/bin/python
+#!/Users/chloefellrath/PycharmProjects/.quarto/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

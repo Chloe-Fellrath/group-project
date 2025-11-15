@@ -1,4 +1,4 @@
-#!/Users/chloefellrath/PycharmProjects/quarto/.venv/bin/python
+#!/Users/chloefellrath/PycharmProjects/.quarto/.venv/bin/python
 import sys
 from jupyter_client.kernelspecapp import KernelSpecApp
 if __name__ == '__main__':
