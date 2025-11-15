@@ -3,4 +3,4 @@ project:
   output-dir: docs
   render:
     - "*.qmd"
-    - "!/./my-quarto-env/"
+    - "!/./quarto-env/"

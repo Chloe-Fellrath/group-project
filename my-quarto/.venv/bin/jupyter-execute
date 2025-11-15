@@ -1,4 +1,4 @@
-#!/Users/chloefellrath/PycharmProjects/my-quarto/.venv/bin/python
+#!/Users/chloefellrath/PycharmProjects/quarto/.venv/bin/python
 import sys
 from nbclient.cli import main
 if __name__ == '__main__':
