@@ -34,8 +34,9 @@ def clean_missing_values(df):
 
 df = pd.read_csv("data/raw/cleaned_top_songs-with_genres-genders.csv")
 df = clean_missing_values(df)
-df.to_csv("cleaned_final_dataset.csv", index=False)
 
 print(df.head())  # shows the first 5 rows
 print(df.info())  # shows column types and missing counts
 print(df.isnull().sum())
+print(df['release_year'].unique())  # Make sure year column looks correct
+

@@ -5,12 +5,12 @@ For this project, we are using public and open-source data via Spotify APIs. We 
 Some challenges that we can encounter with using Spotify’s API:
 
 Certain information, such as exact play counts for tracks or compilations, is no longer publicly available. These limitations could be due to licensing restrictions, copyright concerns, or changes in Spotify’s data policies.
-The popularity variable is somewhat coarse and could be biased through the decades: "The artist's popularity is calculated from the popularity of all the artist's tracks." - https://developer.spotify.com/documentation/web-api/reference/get-an-artist
+The popularity variable is somewhat coarse and could be biased through the decades: "The artist's popularity is calculated from the popularity of all the artist's tracks." (@spotify)
 "The popularity is calculated by algorithm and is based, in the most part, on the total number of plays the track has had and how recent those plays are. Generally speaking, songs that are being played a lot now will have a higher popularity than songs that were played a lot in the past.
-Duplicate tracks (e.g. the same track from a single and an album) are rated independently. Artist and album popularity are derived mathematically from track popularity. Note: the popularity value may lag actual popularity by a few days: the value is not updated in real time." - https://developer.spotify.com/documentation/web-api/reference/get-several-tracks
-Similarly, Spotify’s genre classification is not fully transparent. It is based on internal algorithms and curation processes and may not be consistent across all tracks or artists. Additionally, its genre classification is based on the 'artist' and not the 'track', thus it is sometimes inconsistent since artists tend to change genre specificity. However, it is generally adequate.
-Furthermore, Spotify does not disclose an artist's gender. So we had to cross-reference with another metadata (MusicBrainz).
-Despite these challenges, Spotify APIs remain a rich and accessible source for music data, particularly features like track metadata and artist information.
+Duplicate tracks (e.g. the same track from a single and an album) are rated independently. Artist and album popularity are derived mathematically from track popularity. Note: the popularity value may lag actual popularity by a few days: the value is not updated in real time." (@spotify)
+Similarly, Spotify’s genre classification is not fully transparent. It relies on internal algorithms and curation processes, which may lead to inconsistencies across tracks or artists. Since genres are assigned at the artist level rather than the track level, some variation occurs when artists experiment with different styles. Nevertheless, the classification is generally sufficient for analysis.
+Additionally, Spotify does not provide information about an artist’s gender, so we cross-referenced this metadata using MusicBrainz.
+Despite these limitations, Spotify’s APIs remain a rich and accessible source of music data, particularly for track metadata and artist information.
 
 ::: {.callout-important}
 
@@ -34,7 +34,8 @@ From Spotify APIs, we collected the following variables for each track:
 - album_total_tracks: Number of tracks on the album : integer (e.g. 10)
 - genre: the musical genre of the track: string (e.g. "pop")
 
-From MusicBrainz metadata, we collected 'gender': gender of the main (first) performing artist (e.g. 'female', 'male', 'non-binary', 'group' - for collaborations, and 'unknown' when the value was missing.
+From MusicBrainz metadata, we obtained the gender of the primary (first-listed) performing artist.
+Possible values include 'female', 'male', 'non-binary', 'group' (for collaborations), and 'unknown' when the information was missing.
 
 The dataset is stored in .csv format. Preprocessing included:
 - Removing duplicate tracks
@@ -42,24 +43,22 @@ The dataset is stored in .csv format. Preprocessing included:
 - Normalizing text fields (lowercase, trimmed whitespace)
 - Converting numeric fields
 - Filling missing values where appropriate
-After merging and cleaning, the dataset contains 1,238 records stored in CSV format for ease of processing in Python.
+After merging and cleaning, the dataset contains 1,239 records and 13 variables stored in CSV format for ease of processing in Python.
 
 ::: {.callout-note}
 ## Dataset Overview Template
 
 Summary:
-- **Number of observations**: 1238 rows
-- **Number of variables**: 12 columns
+- **Number of observations**: 1239 rows
+- **Number of variables**: 13 columns
 - **Time period**: 1957-12-02 to 2025-09-26
 - **Geographic coverage**: Global
 - **Key variables**:
 For our analysis, we will focus on a subset of these variables as they allow us to capture artists identity, temporal dynamics and popularity value:
-- track_name
 - track_popularity
-- artist_names
-- album_release_date
-- genre – the musical genre of the track
-- gender – the gender of the main performing artist(s): determined by cross-referencing artist metadata from public sources.
+- genre
+- gender
+- release_year - new numeric variable to support time-based analysis
 
 :::
 
@@ -102,7 +101,6 @@ print(f"\nData types:\n{data.dtypes}")
 print("\nFirst 5 rows:")
 display(data.head())
 ```
-
 ::: {.callout-tip}
 ## Alternative Data Sources
 
@@ -115,17 +113,15 @@ display(data.head())
 
 ### General Transformations
 We performed several preprocessing steps to ensure data quality. These included:
-- cleaning column names
-- handling missing values
-- converting text and categorical variables
-- transforming dates and numeric fields
-- validating consistency across merged sources
+- Cleaning column names
+- Handling missing values
+- Standardizing text and categorical variables
+- Transforming dates and numeric fields
+- Validating consistency across merged sources
 
 ::: {.callout-caution}
-## Document Your Transformations
-
-Every transformation should be:
-1. Clean column names: it is important for referencing, to make sure the data is coherent and proceed that data analysis.
+## Documenting Our Transformations
+1. Clean column names: Ensures consistency and avoids errors in referencing columns in analysis.
 ```{python}
 import pandas as pd
 
@@ -134,132 +130,91 @@ COLS = {
     "track_name":         "track_name",
     "artist_names":       "artist_names",
     "album_release_date": "album_release_date",
-    "genre":              "genre",                 # you don't have it (that's fine)
     "track_popularity":   "track_popularity",
 }
 COLS
-
-df = pd.read_csv("filename.csv")
-df.head()
-
-1. **Justified**: Explain why it's needed
-2. **Documented**: Clear code comments
-3. **Reproducible**: Can be run from scratch
-4. **Validated**: Check the results make sense
+```
+2. Handling missing values: Missing values can break numeric operations or models.
+```{python}
+import pandas as pd
+# Text
+text_cols = ['artist_names', 'track_name', 'album_name', 'genre', 'album_release_date', 'gender']
+for col in text_cols:
+df[col] = df[col].fillna('unknown').str.lower()
+# Numeric
+numeric_cols = ['track_popularity', 'duration_ms', 'album_total_tracks', 'release_year']
+for col in numeric_cols:
+if col in df.columns:
+df[col] = df[col].fillna(0)
+df[col] = df[col].astype('int64')
+# Mark groups in gender
+df.loc[df['artist_names'].str.contains(';'), 'gender'] = 'group'
+return df
+df = pd.read_csv("cleaned_final_dataset.csv")
+print(df.head())
+```
+3. Standardizing text and categorical variables: Categorical/text fields may need consistent formatting.
+```{python}
+# Remove spaces and convert to lowercase
+df['artist'] = df['artist_names'].str.strip().str.title()
+df['track_name'] = df['track_name'].str.strip().str.lower()
+```
+4. Transforming dates and numeric fields: Proper datetime objects allow easy date calculations, filtering, and feature extraction.
+```{python}
+# Dates → proper datetime + helper year column
+df[COLS["album_release_date"]] = pd.to_datetime(
+    df[COLS["album_release_date"]], errors="coerce", utc=True
+)
+df["release_year"] = df[COLS["album_release_date"]].dt.year
+```
+5. Validating consistency across merged sources: Ensures transformations did not introduce errors.
+```{python}
+print(df.head())  # shows the first 5 rows
+print(df.info())  # shows column types and missing counts
+print(df.isnull().sum()) # shows how many missing values are in each column
+print(df['release_year'].unique())  # Make sure year column looks correct
+```
+## Alignment with Research Questions
+- All cleaning steps were focused on ensuring reliable measurement of artist identity, temporal dynamics, and track popularity, which are central to the analysis.
+- By prioritizing critical variables and preserving real variation, the dataset remains representative and suitable for exploring patterns in musical trends.
 :::
 
 ### Spotting Mistakes and Missing Data
-Discuss any identified mistakes or issues with missing data and describe your approach to handling them.
+Missing values were identified in the release_year_album column, which also affected the derived release_year column.
+For categorical variables such as gender and genre, missing values occurred due to incomplete open-source metadata—some artists were not present in the source datasets. Since our analysis requires full coverage of the dataset to avoid empty sets, we imputed these missing entries with 'unknown'.
+For numerical variables, such as track_popularity, missing values were imputed with 0. This choice reflects the fact that popularity is linked to the total number of plays, which is currently coarse-grained, and ensures that calculations and analyses can proceed without errors.
 
 ::: {.callout-warning}
-## Missing Data Strategies
-
-Different approaches for different situations:
-
-- **Deletion**: Remove rows/columns with missing values (when few missing)
-- **Imputation**: Fill with mean, median, mode, or advanced methods
-- **Flagging**: Create indicator variables for missingness
-- **Model-based**: Use algorithms that handle missing values
-
-**Document your choice** and justify why it's appropriate for your data!
+We decided to handle these missing values using imputation, rather than deletion, because the other columns associated with these rows remained consistent and valuable for analysis.
+By applying these imputation strategies:
+- We preserved all rows in the dataset (no deletion), maintaining dataset completeness.
+- We ensured that numeric computations and type conversions (e.g., int64) are valid.
+- Categorical analyses can proceed without errors, with missing values clearly flagged as 'unknown'.
+This approach provides a reproducible, consistent, and practical solution for handling missing data, allowing reliable downstream analysis while maintaining data integrity.
+```{python}
+# Impute missing numeric values with 0 to ensure calculations and type conversions work
+df['track_popularity'] = df['track_popularity'].fillna(0).astype('int64')
+# Convert album release date to datetime (invalid dates become 'unknown')
+df['album_release_date'] = pd.to_datetime(df['album_release_date'], errors='coerce').dt.year
+# Extract release year as integer; fill missing years with 0
+df['release_year'] = df['album_release_date'].dt.year.fillna(0).astype('int64')
+print(df.isnull().sum())  # Check that there are no remaining missing values in numeric columns
+```
 :::
 
 ### Listing Anomalies and Outliers
-Identify any anomalies or outliers discovered, along with your approach to assessing their impact.
-
+We examined the dataset for anomalies and outliers using visualizations such as scatter-plots (e.g., for track duration). While a few extreme values were identified, all of them appeared to be plausible, real, but unusual observations rather than errors. Therefore, these outliers were retained in the dataset.
+Since the outliers did not represent data errors or patterns that would meaningfully impact our analysis, they were not considered particularly informative for our study.
+Retaining them is consistent with our research objectives, as these extreme values still reflect genuine variations in track duration and popularity, which are relevant for understanding trends in musical characteristics and artist behavior over time.
 ::: {.callout-tip}
 ## Outlier Detection Methods
-
-- **Visual inspection**: Box plots, scatter plots
-- **Statistical methods**: Z-scores, IQR method
-- **Domain knowledge**: What values are impossible or implausible?
-
-Remember: Not all outliers should be removed! They might be:
-
-- **Errors**: Data entry mistakes (should be corrected/removed)
-- **Valid extremes**: Real but unusual observations (should be kept)
-- **Key insights**: The most interesting part of your data!
+- Visual inspection: scatter-plots
+- Statistical methods: IQR-based thresholds
+- Domain knowledge validation: distinguishing real extremes from errors
 :::
-
-```{python}
-#| label: data-cleaning
-# Code visibility controlled by format settings in report.qmd
-#| output: true
-
-"""Example of data cleaning with pandas - proper transformations."""
-
-import pandas as pd
-import numpy as np
-from IPython.display import display
-from quarto_runtime import project_root
-
-# Load raw data using the same approach as above
-raw_data = project_root / "data" / "raw" / "data_raw.csv"
-data = pd.read_csv(raw_data, skipinitialspace=True)
-
-# Clean column names (lowercase, remove spaces)
-data.columns = data.columns.str.strip().str.lower()
-
-# Check for missing values
-print("Missing values per column:")
-print(data.isnull().sum())
-
-# Data cleaning pipeline
-data_clean = (
-    data
-    # Remove rows with critical missing values
-    .dropna(subset=["behavior", "performance"])
-    # Convert categorical variables
-    .assign(
-        behavior=lambda df: df["behavior"].astype("category"),
-        instructor=lambda df: df["instructor"].astype("category"),
-    )
-    # Ensure numeric columns are proper type
-    .assign(
-        performance=lambda df: pd.to_numeric(df["performance"], errors='coerce')
-    )
-)
-
-print(f"\nOriginal data shape: {data.shape}")
-print(f"Cleaned data shape: {data_clean.shape}")
-print(f"Rows removed: {data.shape[0] - data_clean.shape[0]}")
-
-# Display cleaned data summary
-print("\nCleaned data summary:")
-display(data_clean.describe(include='all'))
-
-# Save cleaned data for later use (using project_root path)
-processed_path = project_root / "data" / "processed" / "data_processed.csv"
-data_clean.to_csv(processed_path, index=False)
-```
-
-After cleaning, our dataset contains **`{python} data_clean.shape[0]` observations** across **`{python} data_clean.shape[1]` variables**. We removed **`{python} data.shape[0] - data_clean.shape[0]` rows** due to missing values in critical variables.
 
 ::: {.callout-tip}
-## Inline Code for Dynamic Results
-
-Notice the inline code in the paragraph above uses Python expressions wrapped in backticks with `{python}` prefix to insert computed values directly into your text. This ensures your narrative automatically updates when data changes.
-
-**Working examples in this document:**
-
-- The mean performance score is `{python} f'{data_clean["performance"].mean():.3f}'`
-- We analyzed data from `{python} data_clean['instructor'].nunique()` different instructors
-
-**To use inline code:** Write your Python expression between backticks with the {python} prefix, like this (without the backslashes): `\{python\} your_expression_here`
-
-This is better than hard-coding numbers, which can become outdated if you update your data!
-:::
 
 ::: {.callout-important}
-## Don't Forget to Interpret!
-
-After showing your data cleaning code, **explain your decisions**:
-
-- **Why** did you remove certain rows or handle missing values this way?
-- **What** impact do these choices have on your analysis?
-- **How** do your cleaning decisions align with your research questions?
-
-Example: "We removed rows with missing performance scores (N=15, 7.5% of data) because these are our primary outcome variable and cannot be reliably imputed. This minimal data loss is acceptable and preserves the integrity of our performance analysis."
-:::
 
 ::: {.callout-note}
