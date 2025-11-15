@@ -2,15 +2,22 @@
 ##*How Has the Diversity of Artists Evolved in Top Charts?*
 
 ##Introduction
+## Abstract
+This study examines gender representation among artists on the Billboard Top Charts using data enriched with Spotify metadata. We analyze how the presence of women and men artists has changed over time and across genres, and explore the relationship between gender and track popularity.
+Our findings contextualize gender disparities in charting music, highlighting ongoing underrepresentation despite industry efforts to promote diversity. The results provide data-driven insights into structural inequalities in the music industry and inform discussions on representation and visibility.
+
 ###**Background**
-In recent years, discussions about diversity and representation have gained significant visibility across industries. Music plays a central role in modern culture, and platforms like Spotify now collect extensive data on song characteristics and popularity. Despite the undeniable impact of women and gender-diverse artists throughout music history, data suggests that gender disparities persist, particularly in production, chart rankings, and streaming exposure. Examining these disparities is crucial to understanding how structural factors influence the music we consume and the artists who gain recognition.
+In recent years, discussions about diversity and representation have gained significant visibility across industries. Music plays a central role in modern culture, and platforms like Spotify now collect extensive data on song characteristics and popularity.
+Despite the undeniable impact of women and gender-diverse artists throughout music history, data suggests that gender disparities persist, particularly in production, chart rankings, and streaming exposure. Examining these disparities is crucial to understanding how structural factors influence the music we consume and the artists who gain recognition.
 
-We chose this topic because it connects social relevance with quantitative analysis, allowing us to apply data science methods to explore an issue that is both culturally and statistically meaningful. It highlights how data analytics can reveal hidden biases and long-term trends in creative industries.
+We chose this topic because it connects social relevance with quantitative analysis, allowing us to apply data science methods to explore an issue that is both culturally and statistically meaningful.
+It highlights how data analytics can reveal hidden biases and long-term trends in creative industries.
 
-Building on this motivation, our project explores gender representation in music among performing artists appearing in Billboard Top Charts using publicly available data retrieved through Spotify. By applying data science methods from data acquisition and cleaning to analysis and visualization, we seek to uncover patterns and trends that illustrate how gender diversity among artists has evolved across genres and decades. This analysis not only contributes to ongoing discussions about equality in the music industry but also demonstrates how data-driven insights can support social awareness and change.
+Building on this motivation, our project explores gender representation in music among performing artists appearing in Billboard Top Charts using publicly available data retrieved through Spotify.
+By applying data science methods from data acquisition and cleaning to analysis and visualization, we seek to uncover patterns and trends that illustrate how gender diversity among artists has evolved across genres and decades.
+This analysis not only contributes to ongoing discussions about equality in the music industry but also demonstrates how data-driven insights can support social awareness and change.
 
 ###**Objectives**
-
 The project aims to conduct an exploratory data analysis to:
 
 - Quantify the gender distribution of artists in top charts over time using available music datasets.
@@ -19,21 +26,33 @@ The project aims to conduct an exploratory data analysis to:
 - Communicate results through clear visualizations and an interpretive analysis grounded in data science methods.
 
 ###**Research questions**
-
 - How has gender representation among music artists evolved over the years?
 - Are there differences in gender representation across genres (e.g., pop, rock, hip-hop)?
 - Is there a relationship between an artist's popularity and gender?
 - Have certain decades shown more progress in representation than others?
 
-## Related Work
+## **Related Work**
+Epps-Darling, Bouyer, and Cramer (2020) investigate how gender is represented in music streaming, comparing programmed (algorithmic/editorial) streams and organic listening across a sample of 200,000 U.S. users.
+They find that listeners tend to stream fewer female or mixed-gender artists overall, though recommendation-based streams show a slightly higher proportion of female creators than non-recommended (organic) listening.
+They also analyze gender distribution across popularity tiers: lower-popularity artists include more women and multi-gender groups, while “superstar” artists skew more male or solo-female.
+Although their analysis focuses on streaming platforms rather than chart rankings, the connection to our work is direct: Billboard charts increasingly incorporate streaming data, meaning that gender imbalances in streaming visibility can translate into unequal representation in chart performance.
+Our study builds on this by expanding the scope (e.g., popularity, genres, chart measures) to examine how these patterns evolve over time and across groupings.
 
-Discuss relevant academic papers, methodologies, and prior research that informed your project. Include both domain-specific literature (actuarial science, insurance, finance) and methodological references (statistical methods, data science techniques).
+A key reference for this project is the working paper Playlisting Favorites: Measuring Platform Bias in the Music Industry by Aguiar, Waldfogel, and Waldfogel (2021). Their research investigates whether Spotify’s curated playlists—specifically New Music Weekly(2017)—exhibit some evidence of present biases in how artists are ranked and promoted. Their findings are highly relevant to our study of gender representation and popularity trends.
+One of the central results is that Spotify’s ranking system appears biased in favor of independent-label and female artists, suggesting that the platform may be actively trying to counter historical underrepresentation. However, despite these corrective measures, the authors highlight that women artists remain significantly underrepresented in the broader ecosystem, including in top charts, overall streaming volumes, and industry visibility. This aligns directly with our research questions about how gender representation evolves over time and differs across genres.
+This paper is also valuable methodologically. The authors use a careful process to determine artist gender, combining:
+- MusicBrainz metadata (as we do),
+- Gender API based on U.S. Social Security first-name distributions, and
+- Manual verification for ambiguous or low-confidence cases.
+Their multi-step approach highlights the challenges of assigning gender in large-scale music datasets, especially when dealing with international artists, groups, or incomplete metadata. This not only supports our own use of MusicBrainz but also contextualizes the limitations and uncertainties in gender classification—a factor that we acknowledge in our data cleaning decisions.
+Overall, the paper reinforces that gender disparities in the music industry persist across multiple layers (playlisting, popularity, exposure), and that Spotify’s attempts to rebalance representation have not eliminated these gaps. These insights help motivate our analysis of gender dynamics in charting music and validate the importance of examining representation, popularity, and genre through a gender-aware lens.
 
-**Example structure:**
+Finally, The USC Annenberg Inclusion Initiative report by Smith et al. (2021) offers a comprehensive analysis of gender and racial representation among artists, songwriters, and producers across 900 songs charting on the Billboard Hot 100 between 2012 and 2020. Their findings reveal extremely persistent gender disparities: for example, women represented only 21.6% of artists, 12.6% of songwriters, and an even lower 2.6% of producers, with little improvement over the nine-year period.
+These results directly strengthen our project, which also examines gender representation in popular music using a Billboard-based dataset. While our analysis focuses on artist gender and popularity trends, the Annenberg report situates our findings within a broader systemic pattern: even at the highest levels of commercial success, women remain significantly underrepresented.
+The report’s longitudinal scope and emphasis on structural inequality provide essential context for interpreting our own results, reinforcing that the gender disparities we observe are not dataset-specific but part of a well-documented, industry-wide trend.
 
-- **Domain literature**: Academic papers on your topic (e.g., claims analysis, mortality modeling, risk assessment)
-- **Methodological references**: Statistical methods or data science techniques you applied
-- **Course materials**: @azizi2025dsas provides Python-based data science techniques for actuarial applications
-- **Technical resources**: Books like @mckinney2022python and @vanderplas2016python for implementation details
-
+Taken together, the existing literature consistently demonstrates that gender disparities in the music industry persist across multiple layers of the ecosystem—from streaming behavior and playlist curation to charting success and behind-the-scenes creative roles.
+Prior work shows that women remain underrepresented in both algorithmic and organic streaming (Epps-Darling et al., 2020), that platform interventions such as Spotify playlisting may slightly boost visibility yet do not eliminate systemic gaps (Aguiar et al., 2021), and that even among the most commercially successful Billboard hits, women occupy a disproportionately small share of artistic, songwriting, and production roles (Smith et al., 2021).
+These studies collectively highlight both the structural nature of gender inequality and the methodological challenges of measuring representation accurately.
+Building on these insights, our project extends the conversation by examining gender representation within Billboard chart data, while exploring how genre, popularity, and time trends intersect. The related work thus not only contextualizes our research questions but also underscores the importance and relevance of investigating gender dynamics through a data-driven lens.
 ::: {.callout-tip}
