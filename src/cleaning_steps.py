@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("../data/raw/cleaned_top_songs-with_genres&genders.csv")
+df = pd.read_csv("data/raw/cleaned_top_songs-with_genres-genders.csv")
 # Remove spaces and convert to lowercase
 df['artist'] = df['artist_names'].str.strip().str.title()
 df['track_name'] = df['track_name'].str.strip().str.lower()
@@ -26,12 +26,13 @@ def clean_missing_values(df):
     for col in numeric_cols:
         if col in df.columns:
             df[col] = df[col].fillna(0)
+            df[col] = df[col].astype('int64')  # or: df[col] = df[col].apply(np.int64)
 
     # Mark groups in gender
     df.loc[df['artist_names'].str.contains(';'), 'gender'] = 'group'
     return df
 
-df = pd.read_csv("../data/raw/cleaned_top_songs-with_genres&genders.csv")
+df = pd.read_csv("data/raw/cleaned_top_songs-with_genres-genders.csv")
 df = clean_missing_values(df)
 df.to_csv("cleaned_final_dataset.csv", index=False)
 

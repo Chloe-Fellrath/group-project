@@ -18,7 +18,7 @@ All missingness was documented, and the dataset now contains no hidden or ambigu
 
 ## Cleaning numeric and text fields
 Columns such as `track_popularity` and `duration_ms` were checked for data-type consistency and corrected when necessary.  
-Text fields (artist and album names) were standardized to improve grouping and categorization.
+Text fields (artist, track names and album names) were standardized to improve grouping and categorization.
 
 ## Creation of derived variables
 Two new variables were added to support time-based analysis:

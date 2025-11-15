@@ -1,27 +1,66 @@
 # Data
 
 ## Sources
-Describe the sources of your data, such as public datasets, API collections, or scraped data.
+For this project, we are using public and open-source data via Spotify APIs. We selected 8 playlists from the Billboard Hot 100 Top Charts which we have merged to have only one data frame. Compared to other data sources, we chose APIs because they provide access to a large and varied set of music-related features while allowing greater flexibility and control during the data collection process.
+Some challenges that we can encounter with using Spotify’s API:
+
+Certain information, such as exact play counts for tracks or compilations, is no longer publicly available. These limitations could be due to licensing restrictions, copyright concerns, or changes in Spotify’s data policies.
+The popularity variable is somewhat coarse and could be biased through the decades: "The artist's popularity is calculated from the popularity of all the artist's tracks." - https://developer.spotify.com/documentation/web-api/reference/get-an-artist
+"The popularity is calculated by algorithm and is based, in the most part, on the total number of plays the track has had and how recent those plays are. Generally speaking, songs that are being played a lot now will have a higher popularity than songs that were played a lot in the past.
+Duplicate tracks (e.g. the same track from a single and an album) are rated independently. Artist and album popularity are derived mathematically from track popularity. Note: the popularity value may lag actual popularity by a few days: the value is not updated in real time." - https://developer.spotify.com/documentation/web-api/reference/get-several-tracks
+Similarly, Spotify’s genre classification is not fully transparent. It is based on internal algorithms and curation processes and may not be consistent across all tracks or artists. Additionally, its genre classification is based on the 'artist' and not the 'track', thus it is sometimes inconsistent since artists tend to change genre specificity. However, it is generally adequate.
+Furthermore, Spotify does not disclose an artist's gender. So we had to cross-reference with another metadata (MusicBrainz).
+Despite these challenges, Spotify APIs remain a rich and accessible source for music data, particularly features like track metadata and artist information.
 
 ::: {.callout-important}
+
 ## Data Source Documentation
 
-Always include the **URL** where the data can be accessed. This is essential for reproducibility and evaluation. For example "Data source: [Kaggle Insurance Dataset](https://www.kaggle.com/datasets/example)"". Also mention when the data was accessed.
+Data Source: cleaned_final_dataset.csv
+data/processed/
 :::
 
 ## Description
-Summarize the main features of the dataset, including the types of variables, their formats, and any relevant metadata.
+From Spotify APIs, we collected the following variables for each track:
+- track_id: Unique identifier for the track (tr.get("id")) : string (e.g. "6dOtVTDdiauQNBQEDOtlAB")
+- track_name: Track title (tr.get("name")) : string (e.g. "golden")
+- track_popularity: Popularity score (tr.get("popularity")) : integer (0-100)
+- duration_ms: Track duration in milliseconds (tr.get("duration_ms")) : integer (e.g. 210373)
+- artist_names: Names of the performing artists : string (e.g. "billie eilish")
+- artist_ids: Spotify IDs of the artists : string (e.g. "6qqNVTkY8uBg9cP3Jd7DAH")
+- album_id: Unique album identifier : string (e.g. "14JkAa6IiFaOh5s0nMyMU9")
+- album_name: Album title : string (e.g. "hit me hard and soft")
+- album_release_date: Release date of the album : string (e.g. "2024-05-17 00:00:00+00:00")
+- album_total_tracks: Number of tracks on the album : integer (e.g. 10)
+- genre: the musical genre of the track: string (e.g. "pop")
+
+From MusicBrainz metadata, we collected 'gender': gender of the main (first) performing artist (e.g. 'female', 'male', 'non-binary', 'group' - for collaborations, and 'unknown' when the value was missing.
+
+The dataset is stored in .csv format. Preprocessing included:
+- Removing duplicate tracks
+- Standardizing date formats for album_release_date
+- Normalizing text fields (lowercase, trimmed whitespace)
+- Converting numeric fields
+- Filling missing values where appropriate
+After merging and cleaning, the dataset contains 1,238 records stored in CSV format for ease of processing in Python.
 
 ::: {.callout-note}
 ## Dataset Overview Template
 
-Provide a clear summary:
+Summary:
+- **Number of observations**: 1238 rows
+- **Number of variables**: 12 columns
+- **Time period**: 1957-12-02 to 2025-09-26
+- **Geographic coverage**: Global
+- **Key variables**:
+For our analysis, we will focus on a subset of these variables as they allow us to capture artists identity, temporal dynamics and popularity value:
+- track_name
+- track_popularity
+- artist_names
+- album_release_date
+- genre – the musical genre of the track
+- gender – the gender of the main performing artist(s): determined by cross-referencing artist metadata from public sources.
 
-- **Number of observations**: X rows
-- **Number of variables**: Y columns
-- **Time period**: Start date to end date
-- **Geographic coverage**: Region/Country
-- **Key variables**: List the most important variables for your analysis
 :::
 
 ## Loading Data
@@ -34,7 +73,6 @@ Provide a clear summary:
 3. **Inspect the first few rows** to verify correct loading
 4. **Document any loading parameters** (e.g., encoding, delimiter)
 
-**Important**: Do not change the data loading approach shown below. The template uses `project_root` from the setup chunk to ensure your code works regardless of where the report is run from.
 :::
 
 ```{python}
@@ -68,27 +106,41 @@ display(data.head())
 ::: {.callout-tip}
 ## Alternative Data Sources
 
-Depending on your project, you might load data from:
+- **CSV files**: `pd.read_csv(cleaned_final_dataset.csv)`
+(- **APIs**: Using `requests` library + `pd.DataFrame(data)`)
 
-- **CSV files**: `pd.read_csv(filepath)`
-- **Excel files**: `pd.read_excel(filepath, sheet_name='Sheet1')`
-- **JSON files**: `pd.read_json(filepath)`
-- **APIs**: Using `requests` library + `pd.DataFrame(data)`
-- **Databases**: Using `pd.read_sql(query, connection)`
-- **Web scraping**: Using `beautifulsoup4` or `scrapy`
-
-Always document your data acquisition process!
 :::
 
 ## Wrangling
 
 ### General Transformations
-Document the data preprocessing steps taken, including cleaning, transformation, and any merging of datasets.
+We performed several preprocessing steps to ensure data quality. These included:
+- cleaning column names
+- handling missing values
+- converting text and categorical variables
+- transforming dates and numeric fields
+- validating consistency across merged sources
 
 ::: {.callout-caution}
 ## Document Your Transformations
 
 Every transformation should be:
+1. Clean column names: it is important for referencing, to make sure the data is coherent and proceed that data analysis.
+```{python}
+import pandas as pd
+
+COLS = {
+    "track_id":           "track_id",
+    "track_name":         "track_name",
+    "artist_names":       "artist_names",
+    "album_release_date": "album_release_date",
+    "genre":              "genre",                 # you don't have it (that's fine)
+    "track_popularity":   "track_popularity",
+}
+COLS
+
+df = pd.read_csv("filename.csv")
+df.head()
 
 1. **Justified**: Explain why it's needed
 2. **Documented**: Clear code comments
@@ -211,16 +263,3 @@ Example: "We removed rows with missing performance scores (N=15, 7.5% of data) b
 :::
 
 ::: {.callout-note}
-## Data Cleaning Checklist
-
-Before moving to analysis, verify:
-
-- ✓ All column names are clean and consistent
-- ✓ Data types are appropriate for each variable
-- ✓ Missing values are identified and handled
-- ✓ Outliers are investigated and documented
-- ✓ Categorical variables are properly encoded
-- ✓ Duplicate rows are checked and removed if needed
-- ✓ Date/time variables are in proper format
-- ✓ Cleaned data is saved for reproducibility
-:::

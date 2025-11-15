@@ -78,7 +78,7 @@ def enrich_dataset(input_csv_path: str, output_csv_path: str):
 def main():
     enrich_dataset(
         "../data/raw/cleaned_top_songs-with_genres.csv",
-        "data/raw/cleaned_top_songs-with_genres&genders.csv"
+        "data/raw/cleaned_top_songs-with_genres-genders.csv"
     )
 
 if __name__ == "__main__":
