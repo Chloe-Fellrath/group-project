@@ -1,77 +1,114 @@
-# Methods *(optional, only if you have models)*
+# Methods
+Our methodological approach so far has focused on preparing a reliable and structured dataset for analysis. Since our research depends on accurately tracking gender representation across decades and genres, data quality was a central priority.
 
-::: {.callout-note}
-## When to Include This Section
+## 1. Data Cleaning (Completed)
+All cleaning steps were implemented in Python using pandas and are fully documented in our separate cleaning notebook. The main tasks completed include:
 
-Include a Methods section if you:
+### • Removal of duplicate tracks
+Tracks with identical `track_id` values were removed to ensure that each entry in the dataset represents a unique song.
 
-- Apply statistical models (linear regression, logistic regression, etc.)
-- Perform hypothesis testing
-- Use machine learning algorithms
-- Conduct advanced statistical analyses
+### • Standardization of date formats
+`album_release_date` values contained inconsistent formats (e.g., “YYYY”, “YYYY-MM-DD”, blank entries).  
+We standardized all entries to **YYYY-MM-DD** where possible and extracted the **release year** as a new field.
 
-If your project is primarily exploratory (descriptive statistics and visualizations only), you can skip this section or keep it minimal.
-:::
+### • Handling of missing values
+For tracks without any release date, `"N/A"` was inserted.  
+These entries will later be excluded from analyses involving time trends.
 
-Outline the statistical methods or models selected, along with the rationale for their selection.
+### • Cleaning numeric and text fields
+Columns such as `track_popularity` and `duration_ms` were cleaned and corrected to ensure consistent numeric formatting.  
+Text fields (artist names and album names) were standardized to reduce inconsistencies.
 
-**Important**: Don't just show model output, **explain your choices**:
+### • Creation of new variables
+We added:
+- **release_year**  
+- **decade** (e.g., 1980, 1990, 2000)
+These new variables will allow us to analyze gender diversity across long-term trends.
 
-- **Why** did you choose this particular method?
-- **What** assumptions does it make, and do your data meet them?
-- **How** does this method help answer your research questions?
+### • Verification of the final dataset
+We confirmed:
+- correct number of rows/columns  
+- no remaining duplicates  
+- missing values limited to non-critical fields  
+- proper data types  
 
-```{python}
-#| label: initial-analysis
+The cleaned dataset is saved as **`cleanes_top_songs.csv`** in our GitHub repository.
 
-from sklearn.linear_model import LinearRegression
-import numpy as np
-import pandas as pd
+## 2. Planned Exploratory Analysis
 
-model = LinearRegression()
+With the cleaned dataset finalized, our next step is to begin preliminary exploratory data analysis (EDA). Planned components include:
 
-# Prepare the data (using dummy variables for categorical instructor variable)
-X = np.array(pd.get_dummies(data_clean[["instructor"]], drop_first=True))
-y = np.array(data_clean["performance"])
+- summary statistics (counts, proportions, averages)  
+- visualization of gender distribution over time  
+- comparisons of gender representation across genres  
+- exploration of popularity differences across gender categories  
 
-# Fit the model
-model.fit(X, y)
+These analyses will help us uncover major patterns before applying more advanced statistical techniques.
 
-print("=== Linear Regression Results ===")
-print(f"Coefficients: {model.coef_}")
-print(f"Intercept: {model.intercept_:.4f}")
-print(f"R-squared: {model.score(X, y):.4f}")
-```
+---
 
-::: {.callout-important}
-## Interpretation is Essential!
+## 3. Statistical Approach (Planned)
 
-After showing model results, you **must interpret them**:
+Although statistical modeling has not yet been executed, we have defined the analytical strategy that will guide the next phase of our project.
 
-**Example interpretation:**
+### **1. Gender Representation Over Time**
+To measure how gender distribution changes from decade to decade, we will use:
 
-"The Poisson regression model identifies three significant predictors of insurance claim frequency. Vehicle age shows a positive coefficient (β = 0.08, p < 0.01), indicating that each additional year of vehicle age increases expected claims by approximately 8%. Driver age has a negative coefficient (β = -0.02, p < 0.001), meaning older drivers file fewer claims. The urban location dummy variable (β = 0.15, p < 0.05) suggests urban drivers have 15% higher claim rates than rural drivers.
+- proportion tables  
+- grouped bar plots  
+- line charts  
 
-However, the model's pseudo-R² of 0.22 indicates that these predictors explain only 22% of claim variation. Unobserved factors like driving behavior, road conditions, and individual risk tolerance likely account for the remaining variation. This suggests that while demographic variables are useful for pricing, insurers should not rely solely on them for risk assessment."
+These descriptive methods align with our goal of understanding long-term representation trends.
 
-**Remember**: Model output without interpretation demonstrates technical skills but not understanding!
-:::
+### **2. Gender Differences Across Genres**
+To assess whether gender representation depends on genre, we will use:
 
-# Findings and Discussion
+- cross-tabulations  
+- chi-square tests of independence (if assumptions are satisfied)
 
-Provide your results or observations from applying statistical methods, then **discuss them thoroughly** in the context of your research questions and project goals.
+This will let us evaluate whether genre categories are associated with uneven gender representation.
 
-::: {.callout-tip}
-## Structure Your Discussion
+### **3. Popularity and Gender**
+To investigate whether popularity differs by gender, we plan to use:
 
-A good discussion:
+- t-tests or non-parametric alternatives  
+- ANOVA (if multiple groups are compared)  
+- regression models (popularity ~ gender + year)
 
-1. **States the finding** clearly (reference tables/figures)
-2. **Interprets the result** (what does it mean?)
-3. **Connects to research questions** (how does it answer your questions?)
-4. **Relates to domain knowledge** (does it align with theory or prior research?)
-5. **Acknowledges limitations** (what are the caveats?)
-6. **Suggests implications** (what should we do with this information?)
+These tests will help determine whether observed differences in popularity metrics are statistically meaningful.
 
-**Example**: "Our regression analysis shows that experience significantly predicts performance (β = 0.01, p < 0.001), supporting our hypothesis that skill develops over time. This aligns with learning curve theory in organizational psychology and suggests that training programs should emphasize sustained practice. However, the wide confidence interval (95% CI: [0.005, 0.015]) indicates substantial individual variation, meaning experience alone cannot guarantee high performance."
-:::
+### **Rationale**
+We selected these methods because:
+
+- they are appropriate for categorical vs. numerical variable interactions  
+- they directly answer our research questions  
+- they are standard and interpretable in social science research  
+- they do not require assumptions that our dataset cannot meet  
+
+This staged approach ensures that our analysis remains both rigorous and aligned with the structure of our cleaned dataset.
+
+# Analysis
+
+At this point in the project, our analysis focuses on validating the cleaned dataset and preparing it for deeper exploration.
+
+## Initial Checks
+
+Once the cleaned dataset was loaded, we conducted a series of checks:
+
+- verified dataset dimensions (rows and columns)  
+- confirmed that duplicate track IDs were fully removed  
+- inspected remaining missing values  
+- validated standardized date formats  
+- ensured correct creation of `release_year` and `decade` variables  
+
+These checks confirm that the dataset is ready for accurate visual and statistical analysis.
+
+## Early Observations
+
+While full EDA is planned next, we already observed:
+- The dataset covers multiple decades of Billboard top charts.
+- Numeric fields (e.g., popularity, duration) are properly formatted.
+- Missing values are limited and largely restricted to release dates.
+- Text fields are clean and can be used for grouping (e.g., by genre or artist).
+
+These observations indicate that our cleaning stage successfully prepared the data for more advanced steps.
