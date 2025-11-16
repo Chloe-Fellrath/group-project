@@ -1,7 +1,8 @@
 {
-  "access_token": "BQBk2JlG63WAuqaxKFuWD0ZAmqNEjasLKkav7IVYsqYUzvznQNdyzgmnHPLv2pjU3hN0TVMb0QOGIpAbyyNmbkZojBx2M5z_aVVjZT0PErOBXKtO9P0FDIBtnNjMTtz4SlnPsOjJgNbXRs4fZfsN3w54rdubXpnDs4EWUT1mXVQR1nvZo04sUEwr_CKMxljq8jdeUm4x7gTkReQ57QJgF_lSUNcUTZiY",
+  "access_token": "BQCT8zxR65wm3kzqD0ENOBo1ggeCcm2M7ZxDT_4UqzsOCNY-Z1hbtqE2ktorL9y4Eeu8J-ehwyxbC92Y6tzLoXSZ_EVzLpOXHVu9IcLbozpnSPWsR8ct7WnspuNAoi9URyH8UlykOjtNqLHAIWODteVKr9XybL4UOW5otBlrjeLLb0aaYMGWu4kjYL2Hy_7O2S9Q-oF8ZBEdbwCjAxPn5_WuCn0q7fmI5Vff371a3io9odv9QUGUcrgujIbq1Jwk",
   "token_type": "Bearer",
   "expires_in": 3600,
-  "refresh_token": "AQD0JDQkoFwEmOW4E4tZvUlqYlPIfL4mAyepQeEn5RqTYXj43qMIh9YBhOh7ON5BShf3b2wgtx_LZOm6lAyIa4McCJZX5sXBV8xRIJ7YcPRN9TbCucUqGYN31qbXhi5y8u0",
-  "_obtained_at": 1763118209
+  "refresh_token": "AQAb_G9uQgMLQHS0yYZuPVkvGvrMNi4yr0WifNfHNUUSDzoh79awrbNly8HfqeNbj2_vlTG0RLlLk5cSvG8wC13xmSq5PyPBjOse2RdmCzYLc-N1TQ_alHe9s2k9HAkVC_9siA",
+  "scope": "playlist-read-private playlist-read-collaborative user-library-read",
+  "_obtained_at": 1763285056
 }

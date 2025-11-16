@@ -1,38 +1,122 @@
 # EDA
 
-::: {.callout-tip}
-## Exploratory Data Analysis (EDA) Purpose
-
-The goal of EDA is to:
-
-1. **Understand** the structure and patterns in your data
-2. **Identify** relationships between variables
-3. **Detect** anomalies, outliers, and data quality issues
-4. **Generate** hypotheses for further analysis
-5. **Choose** appropriate statistical methods
-
-Good EDA combines **visualizations** + **summary statistics** + **domain knowledge**.
-:::
-
-::: {.callout-important}
-## Interpretation is Key!
-
-**Creating plots is only half the work.** The most important part of EDA is **interpreting** what your visualizations reveal about the data.
-
-For **every plot** you create, you must:
-
-- **Describe** what the plot shows (patterns, trends, distributions)
-- **Explain** why these patterns matter for your research questions
-- **Connect** findings to your project goals and domain context
-- **Justify** subsequent analysis decisions based on these insights
-
-**A plot without interpretation is meaningless.** Your grade depends heavily on the quality of your interpretations, not just the number of plots you create.
-:::
-
 ## Univariate Analysis
+In this step, each key variable is examined individually to understand its distribution, central tendency, and overall spread. This approach helps us identify important characteristics such as skewness, outliers, common categories, and temporal patterns.
+By analyzing variables one at a time, we gain a clearer view of how each behaves independently before exploring relationships between them. For our project, we focus on four main variables—track_popularity, genre, gender, and release_year—as they form the foundation of our subsequent analyses.
+Examining these variables separately allows us to highlight meaningful patterns, detect irregularities, and better justify the methodological choices we make in the later stages of the study.
+```{python}
+##Loading the data set for an overview of the dataset
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 
-Examine each variable individually to understand its distribution, central tendency, and spread.
+sns.set_theme(style="whitegrid", context="notebook",
+                palette="colorblind", font_scale=1.1")
 
+df = pd.read_csv("cleaned_final_dataset.csv")
+
+df.head() # shows the first 5 rows of the dataset
+df.tail() # shows the 5 last rows preview
+df.shape # shows the dimension of the dataset
+df.dtypes # check the structure of the data
+df.isna().sum() # check if there is some missing value (no missing values found)
+```
+Since the dataset is complete, we can proceed directly with feature-level analysis and explore patterns in musical characteristics.
+## Overview of the key variables
+To recall we have chosen 4 key variables that will help us through our analysis:
+- track_popularity: integer
+- genre: string
+- gender: string
+- release_year: integer
+
+## Distribution Plots
+### Distribution of popularity
+```{python}
+# Set publication-quality style
+sns.set_theme(style="whitegrid", context="notebook",
+              palette="colorblind", font_scale=1.1)
+plt.figure(figsize=(10,5))
+sns.histplot(df["track_popularity"], kde=True, bins=30)
+plt.title("Distribution of track popularity scores")
+plt.xlabel("Popularity")
+plt.ylabel("Count")
+plt.show()
+```
+The distribution of track popularity is noticeably right-skewed, as shown in the histogram. Although our dataset focuses on songs that were considered popular (Billboard Hot year-end charts) from the 1960s to today, many tracks now receive very low popularity scores (between 0 and 10).
+This pattern reflects how Spotify calculates popularity: it is not based on historical success, but on current listening activity. As a result, older tracks that were once widely recognized may no longer be frequently streamed, leading to low popularity values today.
+This skewness highlights an important limitation of the variable: popularity on Spotify captures present-day relevance, not long-term cultural impact. This will be important to consider when interpreting trends over time or comparing older and newer releases.
+
+### Distribution of gender
+The gender distribution contains four categories: male, female, group, non-binary, and unknown. The male and female categories represent individual artists whose gender information is explicitly provided. The unknown category corresponds to missing or incomplete entries, which mainly come from inconsistencies in the MusicBrainz API.
+This highlights a data limitation: gender information is not always available for every artist, especially older or less documented ones. The group category refers to musical groups or bands; these may consist of only men, only women, or mixed members. We chose not to classify groups further by internal composition, as this would require additional assumptions and introduce classification uncertainty.
+Finally, the non-binary category represents a very small proportion of the dataset. This reflects both the relatively recent visibility of non-binary artists in mainstream music databases and the historical lack of representation in the industry. Overall, this distribution illustrates both structural biases in data collection and broader social dynamics within the music industry.
+```{python}
+sns.set_theme(style="whitegrid", context="notebook",
+              palette="colorblind", font_scale=1.1)
+plt.figure(figsize=(8,5))
+sns.countplot(data=df, x="gender")
+plt.title("Distribution of gender")
+plt.xlabel("Gender category")
+plt.ylabel("Count")
+plt.show()
+```
+This missing gender information must be acknowledged because it affects the interpretation of all gender-related analyses. Any comparison between male, female, non-binary, and group artists will be biased if ‘unknown’ forms such a large segment.
+For this reason, descriptive statistics and statistical tests should be conducted both including and excluding the ‘unknown’ category, depending on the research question.
+```{python}
+# Filter only men and women
+df_binary_gender = df[df["gender"].isin(["male", "female"])]
+
+sns.set_theme(style="whitegrid", context="notebook",
+              palette="colorblind", font_scale=1.1)
+
+plt.figure(figsize=(8,5))
+sns.countplot(data=df_binary_gender, x="gender")
+plt.title("Distribution of Gender (Men vs Women Solo Artists Only)")
+plt.xlabel("Gender")
+plt.ylabel("Count")
+plt.show()
+```
+For this additional visualization, we filtered the dataset to include only male and female solo-artists in order to observe the distribution between these two majority groups.
+Entries labeled “unknown” or “non-binary” were excluded from this plot but are still considered in the global analysis.
+
+#Distribution of the release year
+```{python}
+plt.figure(figsize=(10,5))
+sns.histplot(df["release_year"], bins=5)
+plt.title("Distribution of release years")
+plt.xlabel("Release year")
+plt.ylabel("Count")
+plt.show()
+```
+The distribution of release years reveals two distinct clusters: one centered around modern years (2000–2025) and another composed of implausibly early years such as 0–700 AD. These extreme early values cannot represent actual music release dates and indicate incorrect or incomplete metadata within the dataset. Such anomalies typically arise when Spotify provides partial or malformed release date information. In cases where the full date cannot be parsed, placeholder years (e.g., 0000, 0100) may be automatically assigned. The issue may also occur when compilation albums or re-releases lack explicit date metadata, causing the extraction process to misinterpret the year. Our project investigates gender representation over time, valid release years are essential. Incorrect early years would distort decade distributions, bias temporal trends, and misrepresent patterns of gender evolution. These anomalies would therefore compromise all longitudinal analyses, including proportions of male/female artists per decade and gender-related changes in popularity over time. To ensure accurate temporal analysis, all implausible years must be removed or recoded. We will exclude entries with release_year < 1900, as they do not correspond to modern musical production and only reflect metadata errors. This cleaning step ensures that decade-level and trend-based analyses are reliable and valid.
+```{python}
+#Remove implausible release years
+df = df[df["release_year"] >= 1900]
+
+#Check the year
+df["release_year"].min(), df["release_year"].max()
+
+#Release years cleaned
+
+plt.figure(figsize=(10,5))
+sns.histplot(df["release_year"], bins=30)
+plt.title("Distribution of release years (Cleaned)")
+plt.xlabel("Release year")
+plt.ylabel("Count")
+plt.show()
+```
+```{python}
+##Distribution of decades
+df["decade"] = (df["release_year"] // 10) * 10
+
+plt.figure(figsize=(12,5))
+sns.countplot(data=df, x="decade")
+plt.title("Distribution of tracks per decade")
+plt.xlabel("Decade")
+plt.ylabel("Count")
+plt.show()
+```
 ::: {.panel-tabset}
 
 ## Distribution Plot

@@ -57,28 +57,19 @@ def enrich_dataset(input_csv_path: str, output_csv_path: str):
     genders = []
 
     for raw in df["artist_names"]:
-        print("RAW =", repr(raw))
-
         artists = parse_artist_field(raw)
-        print("PARSED =", artists)
-
         first_artist = artists[0] if artists else None
-        print("FIRST ARTIST =", first_artist)
-
         gender = get_artist_gender(first_artist)
-        print(f"→ {first_artist} → gender = {gender}\n")
-
         genders.append(gender)
         time.sleep(1)
-
     df["gender"] = genders
     df.to_csv(output_csv_path, index=False)
     print("Saved:", output_csv_path)
 
 def main():
     enrich_dataset(
-        "../data/raw/cleaned_top_songs-with_genres.csv",
-        "data/raw/cleaned_top_songs-with_genres-genders.csv"
+        "cleaned_top_songs-with_genres.csv",
+        "cleaned_top_songs-with_genres-genders.csv"
     )
 
 if __name__ == "__main__":

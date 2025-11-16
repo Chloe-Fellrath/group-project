@@ -20,8 +20,8 @@ import requests  # pip install requests
 
 # ===================== CONFIG =====================
 spotify_ID = "c62c55975a5f467a89a13bcb6fdcb76e"  # Mets ton CLIENT_ID ici si tu n'utilises pas la variable d'env
-INPUT_CSV = "cleaned_top_songs.csv"                    # CSV source à enrichir
-OUTPUT_CSV = "cleaned_top_songs-with_genres.csv"       # CSV de sortie
+INPUT_CSV = "all_playlists_combined.csv"                    # CSV source à enrichir
+OUTPUT_CSV = "all_playlists_combined.csv-with_genres.csv"       # CSV de sortie
 
 # Noms de colonnes attendues dans le CSV d'entrée
 ARTIST_IDS_FIELD = "artist_ids"
@@ -328,27 +328,6 @@ def enrich_csv_with_genres(
             genres = get_genres_for_artist_ids(token_cache, _unique(ids))
             row[genre_field] = sep_out.join(genres)
             writer.writerow(row)
-
-    def get_artist_gender(artist_name):
-        url = f"https://musicbrainz.org/ws/2/artist/?query={artist_name}&fmt=json"
-        r = requests.get(url)
-        data = r.json()
-        try:
-            return data['artists'][0]['gender'].lower()
-        except (KeyError, IndexError):
-            return None
-
-    # Apply to your dataset
-    df = pd.read_csv('enriched_dataset.csv')
-    df['gender'] = df['artist_names'].apply(lambda x: get_artist_gender(x) if pd.notnull(x) else None)
-
-    # Wait a bit between requests
-    time.sleep(1)
-
-    # Save the updated dataset
-    df.to_csv('enriched_dataset(1).csv', index=False)
-
-    return output_csv_path
 
 # ===================== Token helper =====================
 def ensure_user_token() -> Dict[str, Any]:
