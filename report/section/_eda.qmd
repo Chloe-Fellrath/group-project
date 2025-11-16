@@ -162,48 +162,56 @@ plt.show()
 ::: {.panel-tabset}
 
 ## Summary Statistics
-
+The summary statistics provide an overview of our key variables. Numeric variables (release_year and popularity) reveal central tendencies, spread, skewness, and potential outliers.
+Categorical variables (genre and gender) show the distribution of categories (see distribution above) and highlight the most common groups. Box plots and bar plots complement the statistics, making it easier to visualize distribution patterns and understand the dataset at a glance.
 ```{python}
 #| label: tbl-summary-stats
 #| tbl-cap: "Summary statistics for performance scores"
 # Code visibility controlled by format settings in report.qmd
 
-# Display comprehensive summary statistics
-summary_stats = dummy_performance["performance"].describe()
-print("\n=== Performance Summary Statistics ===")
-print(summary_stats.to_string())
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
 
-# Additional statistics
-print(f"\nSkewness: {dummy_performance['performance'].skew():.3f}")
-print(f"Kurtosis: {dummy_performance['performance'].kurtosis():.3f}")
+df = pd.read_csv("cleaned_final_dataset.csv")
+key_vars = ["release_year", "genre", "gender", "popularity"]
+
+for var in key_vars:
+    print(f"\n=== Summary Statistics for {var} ===")
+
+    if df[var].dtype in ["int64", "float64"]:
+        # Numeric variables
+        summary_stats = df[var].describe()
+        print(summary_stats.to_string())
+        print(f"Skewness: {df[var].skew():.3f}")
+        print(f"Kurtosis: {df[var].kurtosis():.3f}")
+    else:
+        # Categorical variables
+        counts = df[var].value_counts()
+        print("\nCounts:")
+        print(counts.to_string())
+        print(f"Unique categories: {df[var].nunique()}")
+
+# BOX PLOT FOR NUMERIC VARIABLES
+numeric_vars = ["release_year", "popularity"]
+
+for var in numeric_vars:
+    fig, ax = plt.subplots(figsize=(6, 4))
+
+    bp = ax.boxplot(df[var].dropna(), vert=True, patch_artist=True,
+                    labels=[var],
+                    boxprops=dict(facecolor='lightblue', edgecolor='black', linewidth=1.5),
+                    medianprops=dict(color='red', linewidth=2),
+                    whiskerprops=dict(color='black', linewidth=1.5),
+                    capprops=dict(color='black', linewidth=1.5))
+
+    ax.set_title(f"{var} Distribution (Box Plot)", fontsize=13, fontweight='bold', pad=15)
+    ax.set_ylabel(var, fontsize=11)
+    ax.grid(True, axis='y', alpha=0.3, linestyle='--')
+
+    plt.tight_layout()
+    plt.show()
 ```
-
-## Box Plot
-
-```{python}
-#| label: fig-performance-box
-#| fig-cap: "Box plot showing the five-number summary and outliers"
-# Code visibility controlled by format settings in report.qmd
-
-fig, ax = plt.subplots(figsize=(6, 4))
-
-# Box plot
-bp = ax.boxplot(dummy_performance["performance"], vert=True, patch_artist=True,
-                labels=["Performance"],
-                boxprops=dict(facecolor='lightblue', edgecolor='black', linewidth=1.5),
-                medianprops=dict(color='red', linewidth=2),
-                whiskerprops=dict(color='black', linewidth=1.5),
-                capprops=dict(color='black', linewidth=1.5))
-
-ax.set_title("Performance Score Distribution (Box Plot)",
-             fontsize=13, fontweight='bold', pad=15)
-ax.set_ylabel("Performance Score", fontsize=11)
-ax.grid(True, axis='y', alpha=0.3, linestyle='--')
-
-plt.tight_layout()
-plt.show()
-```
-
 :::
 
 ## Bivariate Analysis

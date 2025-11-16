@@ -2,7 +2,7 @@
 ##*How Has the Diversity of Artists Evolved in Top Charts?*
 
 ##Introduction
-## Abstract
+### **Abstract**
 This study examines gender representation among artists on the Billboard Top Charts using data enriched with Spotify metadata. We analyze how the presence of women and men artists has changed over time and across genres, and explore the relationship between gender and track popularity.
 Our findings contextualize gender disparities in charting music, highlighting ongoing underrepresentation despite industry efforts to promote diversity. The results provide data-driven insights into structural inequalities in the music industry and inform discussions on representation and visibility.
 
@@ -31,7 +31,7 @@ The project aims to conduct an exploratory data analysis to:
 - Is there a relationship between an artist's popularity and gender?
 - Have certain decades shown more progress in representation than others?
 
-## **Related Work**
+### **Related Work**
 Epps-Darling, Bouyer, and Cramer (2020) investigate how gender is represented in music streaming, comparing programmed (algorithmic/editorial) streams and organic listening across a sample of 200,000 U.S. users.
 They find that listeners tend to stream fewer female or mixed-gender artists overall, though recommendation-based streams show a slightly higher proportion of female creators than non-recommended (organic) listening.
 They also analyze gender distribution across popularity tiers: lower-popularity artists include more women and multi-gender groups, while “superstar” artists skew more male or solo-female.
