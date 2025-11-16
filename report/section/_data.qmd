@@ -216,8 +216,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Load your dataset (adjust the path)
-data = pd.read_csv("../data/processed/cleaned_final_dataset.csv")
+# Loading dataset
+data = pd.read_csv("data/processed/cleaned_final_dataset.csv")
 
 # Function to detect outliers using IQR
 def detect_outliers(df, col):
