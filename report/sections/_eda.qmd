@@ -322,6 +322,8 @@ To make the analysis meaningful and avoid distortions, we restricted the visuali
 
 ## Track Popularity by Gender Category
 ```{python}
+#| label: fig-popularity-gender
+#| fig-cap: "Track Popularity by Gender Category"
 df_gender = df[df["gender"].isin(["male", "female", "non-binary"])]
 
 plt.figure(figsize=(10, 5))
@@ -333,10 +335,19 @@ plt.grid(axis='y', linestyle='--', alpha=0.4)
 plt.tight_layout()
 plt.show()
 ```
-Interpretation: 
+Interpretation: As shown in @fig-popularity-gender, the boxplot compares the distribution of track popularity scores (0–100) across the three gender categories included in the cleaned dataset: female, male, and non-binary artists. The “unknown” category was excluded from this visualization because it reflects missing metadata rather than a meaningful gender group, and including it would prevent meaningful comparisons between actual artist categories.
+
+Female and male artists display a wide range of popularity scores, with both groups showing tracks that span nearly the full 0–100 scale. Male artists exhibit the largest variability, with a notably lower median popularity compared to female artists. Female artists show a slightly higher median and a more compact upper distribution, indicating somewhat less dispersion. The non-binary category—although very small in sample size—shows distinctly higher popularity levels overall, with a tight concentration of values in the upper range (around 80–90) and only one visible outlier.
+
+These patterns suggest that the male and female categories include a mix of both recent and older tracks, which contributes to their wider distributions. Spotify’s popularity metric is based on current streaming frequency, not historical success—so older songs naturally tend to have lower popularity scores. This likely explains the long lower tail observed for both male and female artists.
+Non-binary artists, in contrast, are a relatively recent presence in mainstream charts, and therefore their tracks tend to be newer releases, which typically receive higher Spotify popularity scores. This explains both their higher median and their tight clustering at the top end. However, because the number of non-binary artists in the dataset is extremely small, these results should be interpreted cautiously—the high median may reflect the characteristics of only a few tracks rather than a generalizable pattern.
+
+This visualization highlights an important methodological point: popularity trends cannot be interpreted independently of release year. Any statistical analysis comparing gender and popularity must account for the fact that non-binary tracks are more recent, and that male and female categories include songs across many decades.
 
 ## Average Track Popularity Across Decades
 ```{python}
+#| label: fig-popularity-across-decades
+#| fig-cap: "Average Track Popularity Across Decades"
 df_clean = df[(df["gender"].isin(["male", "female", "non-binary"])) &
               (df["release_year"] >= 1900)]
 
@@ -354,10 +365,20 @@ plt.grid(axis='y', linestyle='--', alpha=0.4)
 plt.tight_layout()
 plt.show()
 ```
-Interpretation: 
+Interpretation: As shown in @fig-popularity-across-decades, the line plot displays the average Spotify popularity of Billboard-charting tracks across decades from 1950 to 2020. Before computing these averages, we removed implausible release years (e.g., 0–700 AD) to ensure that decade-level trends reflect genuine musical timelines rather than metadata errors.
+
+The trend is highly non-linear. The 1950s show the highest average popularity (around 70), followed by a sharp decline through the 1960s and a steep drop reaching the lowest point in the 1970s (around 18). Popularity rises again in the 1980s, dips slightly in the 1990s and 2000s, and then increases strongly in the 2010s and 2020s, nearing the popularity levels observed in the 1950s.
+
+This pattern does not reflect historical chart success—every track in this dataset was popular at the time of release. Instead, the trend is shaped by how Spotify’s popularity metric works: it measures current streaming activity, not past cultural relevance.
+Thus, more recent tracks (2010s–2020s) naturally appear more popular because they remain part of active streaming behavior, whereas older tracks tend to receive fewer streams today, leading to lower popularity scores. The extremely low averages in the 1970s and 2000s likely reflect decades where many charting songs today no longer exhibit strong streaming traction.
+The high average popularity in the 1950s is partly driven by the small sample size for that decade in our dataset (only a few tracks), making decade averages sensitive to individual values. This highlights the need to interpret early-decade values cautiously.
+
+Therefore, this visualization shows that popularity cannot be compared across decades without controlling for release year. Such strong temporal bias means that any statistical analysis examining gender and popularity must include release_year (or decade) as a covariate. Ignoring this effect would lead to misleading conclusions, as differences might reflect temporal streaming patterns rather than gender-based disparities.
 
 ## Average Track Popularity by Gender Across Decades
 ```{python}
+#| label: fig-popularity-gender-decade
+#| fig-cap: "Average Track Popularity by Gender Across Decades"
 df_clean = df[(df["gender"].isin(["male", "female", "non-binary"])) &
               (df["release_year"] >= 1900)]
 
@@ -387,13 +408,25 @@ plt.grid(axis="y", linestyle="--", alpha=0.4)
 plt.tight_layout()
 plt.show()
 ```
-Interpretation: 
+Interpretation: As shown in @fig-popularity-gender-decade, this visualization compares the average Spotify popularity of male, female, and non-binary artists across decades. Prior to computing these trends, we removed entries labeled as “unknown” gender, since this category reflects incomplete metadata rather than meaningful gender information. Including unknowns would obscure true cross-gender differences and make patterns uninterpretable.
+
+Both male and female artists follow a broadly similar pattern over time: popularity peaks in early and late decades (1950s and 2020s), dips sharply in the 1970s, and gradually rises again after the 2000s. In most decades, female artists have slightly higher average popularity than male artists, particularly in the 1960s, 1980s, and 1990s.
+Non-binary artists appear only in the 2010s and 2020s due to their much more recent documentation in streaming platforms. Their average popularity is very high in the 2010s (over 80) but decreases in the 2020s as the number of non-binary entries grows.
+
+These decade-level trends are shaped largely by Spotify’s popularity metric, which captures current streaming activity rather than historical chart performance. Because more recent songs remain culturally active and receive more streams, all genders see higher popularity scores in the 2010s–2020s.
+The consistently higher averages for female artists in several decades may reflect that a subset of female-led hits has maintained long-term relevance on streaming platforms—for example, iconic female pop artists tend to dominate nostalgic listening playlists.
+For non-binary artists, the extremely high 2010s value is likely driven by very small sample size, meaning a single highly streamed artist can disproportionately raise the decade average. Their lower average in 2020 reflects the entrance of more non-binary artists into mainstream recognition, producing a more balanced mean.
+
+This figure shows that popularity differences between genders cannot be interpreted without controlling for time. Without taking decade into account, any observed gender gap would actually reflect temporal streaming bias, not true popularity differences.
+This could motivate our planned statistical analysis: future models will need to incorporate release_year (or decade) as a covariate when testing whether gender predicts popularity.
 
 ## Correlation Analysis (Numeric Variables)
 - track_popularity
 - duration_ms
 - release_year
 ```{python}
+#| label: fig-corr-matrix
+#| fig-cap: "Correlation Analysis (Numeric Variables)"
 numeric_df = df[["track_popularity", "duration_ms", "release_year"]]
 
 corr = numeric_df.corr()
@@ -411,33 +444,72 @@ plt.title("Correlation Matrix of Numeric Variables", fontsize=14)
 plt.tight_layout()
 plt.show()
 ```
-Interpretation: 
+Interpretation: As shown in @fig-corr-matrix, the correlation matrix displays the relationships among the three numeric variables included in our dataset: track_popularity, duration_ms, and release_year. The overall pattern reveals very weak correlations across all pairs of variables.
+
+Track popularity vs. duration_ms:
+The correlation is slightly negative (r = –0.06), indicating virtually no linear relationship between a song’s length and its popularity.
+
+Track popularity vs. release_year:
+A very small positive correlation (r = 0.05) suggests that newer tracks tend to be slightly more popular, but the effect is extremely weak and not meaningful.
+
+Duration_ms vs. release_year:
+A similarly small negative correlation (r = –0.07) shows almost no temporal trend in the average length of tracks.
+
+These near-zero correlations indicate that none of these numeric variables strongly predict one another, which has several implications for our analysis:
+- Popularity is not driven by track length, meaning duration does not confound popularity-based comparisons across gender or decades.
+- Release year does not strongly correlate with popularity, reinforcing that Spotify’s popularity metric reflects current listening behavior, not historical success.
+- The absence of strong linear relationships confirms that multicollinearity is not a concern for any regression models we may run later in the analysis.
+
+As with earlier analyses, we removed entries with missing or invalid values (e.g., unknown genders or implausible release years) before computing these correlations to avoid introducing artificial distortions into the numeric relationships.
 
 :::
 
 ## Key Findings
-1. **Distribution patterns**: The performance scores shown in @fig-performance-dist follow an approximately normal distribution with a mean of `{python} f'{dummy_performance["performance"].mean():.2f}'` and standard deviation of `{python} f'{dummy_performance["performance"].std():.2f}'`.
+1. As shown in @fig-gender-decade, male artists consistently appear more frequently in the Billboard top charts than female artists across nearly all decades. However, both male and female representation increase substantially beginning in the 1980s, with female representation nearly doubling between the 1980s and the 2010s. Non-binary representation emerges only in the 2010s and remains extremely limited.
 
-   **Interpretation**: This normal distribution suggests that most students perform around the average, with fewer students at the extremes (very high or very low scores). The relatively small standard deviation indicates consistent performance across the group. This pattern is typical in educational settings and suggests that the assessment was well-calibrated meaning not too easy (which would cause ceiling effects) nor too difficult (which would cause floor effects). The normality assumption also validates the use of parametric statistical tests for subsequent analyses.
+Interpretation:
+This pattern shows that gender diversity in popular music has improved over time but remains imbalanced. The rise in female representation aligns with broader social and industry shifts toward greater visibility and acceptance of women in commercial music. The late emergence of non-binary artists reflects both historical underrepresentation and the recent development of more inclusive gender categories in music databases.
+This directly addresses our Research Question 1: How has the gender composition of charting artists evolved across decades?
+The large disparities highlight long-term structural gender imbalances in the music industry.
 
-2. **Outliers and data quality**: The box plot (@fig-performance-box) reveals minimal outliers, with only a few observations falling below the lower whisker.
+2. Gender Diversity Varies Across Genres, with Strong Male Dominance in Most Categories
+The distribution of gender across the top 10 most common genres (@fig-gender-top-genres) shows that most genres—especially hip hop and rock—are overwhelmingly male-dominated. Female representation is highest in pop, dance pop, and R&B. Non-binary representation remains nearly absent across all genres.
 
-   **Interpretation**: The scarcity of outliers suggests good data quality and consistent measurement. The few low-performing outliers warrant further investigation - they could represent students who faced unusual circumstances or measurement errors. However, their small number means they are unlikely to significantly impact our overall conclusions. This finding gives us confidence in proceeding with the full dataset without extensive outlier removal.
+Interpretation:
+Gender representation in top-charting music is strongly genre-dependent. Genres historically associated with industry gatekeeping (e.g., hip hop, rock) exhibit the lowest levels of gender diversity, while genres with broader mainstream crossover appeal (e.g., pop) show more balanced representation.
+This finding addresses our Research Question 2: Does gender representation vary across musical genres?
+The results suggest that gender disparities reflect genre-specific norms, production cultures, and commercial dynamics.
 
-3. **Group differences**: @fig-performance-by-instructor demonstrates noticeable variation in performance across different instructors, with some instructors showing higher median scores than others. The ANOVA test (@tbl-anova-test) confirms these differences are `{python} 'statistically significant (p < 0.05)' if p_value < 0.05 else 'not statistically significant (p ≥ 0.05)'`.
+3. Track Popularity Differs Across Gender Categories
+The boxplot in @fig-popularity-gender shows that female and male artists have broad and overlapping popularity distributions, while non-binary artists appear to have higher median popularity but also far fewer observations. Male tracks show a slightly wider spread, including more low-popularity values.
 
-   **Interpretation**: `{python} 'The significant differences across instructors raise important questions about teaching effectiveness, grading consistency, or student assignment to sections. This finding suggests that "instructor" should be included as a control variable in any regression models predicting performance.' if p_value < 0.05 else 'The lack of significant differences suggests that instructor assignment does not substantially impact performance, or that grading standards are well-harmonized across sections.'` It also indicates that comparing students across different sections requires careful consideration. From a policy perspective, this might warrant investigating whether certain teaching methods are more effective or whether grading standards need to be harmonized across sections.
+Interpretation:
+Female and male artists perform similarly in terms of present-day Spotify popularity, with no substantial gap between their central tendencies. The elevated median for non-binary artists likely reflects small-sample bias, where a few highly-streamed tracks heavily influence the average.
+This contributes to our Research Question 3: Are there measurable differences in popularity patterns across gender groups?
+The results suggest that popularity disparities are minor and may require statistical testing (e.g., ANOVA or non-parametric tests) to confirm whether differences are meaningful (next steps).
 
-4. **Relationships**: The correlation matrix (@fig-correlation-matrix) reveals several interesting patterns:
-   - Strong positive correlation (r = `{python} f'{corr_matrix.loc["Experience", "Salary"]:.2f}'`) between Experience and Salary
-   - Moderate positive correlation (r = `{python} f'{corr_matrix.loc["Experience", "Performance"]:.2f}'`) between Experience and Performance
-   - Weak correlation (r = `{python} f'{corr_matrix.loc["Age", "Performance"]:.2f}'`) between Age and Performance
+4. Track Popularity Varies Substantially Across Decades
+As depicted in @fig-popularity-across-decades, average track popularity fluctuates over time, with dips in the 1970s and early 2000s and higher values in the 1950s, 2010s, and 2020s.
 
-   **Interpretation**: The Experience-Salary correlation aligns with economic theory that experience is rewarded in labor markets. The Experience-Performance correlation suggests that experience contributes to better performance, though other factors clearly matter as well. Interestingly, Age shows minimal correlation with Performance, suggesting that chronological age alone doesn't predict success - what matters is relevant experience. These patterns will guide our variable selection for predictive modeling, favoring Experience over Age as a key predictor.
+Interpretation:
+These differences reflect Spotify’s popularity metric, which captures current streaming activity rather than historical impact. Older songs must remain culturally relevant to maintain high popularity scores. Thus, decades with low averages (e.g., 1970s) may reflect generational turnover in streaming behavior rather than musical quality.
+This highlights a key methodological limitation: popularity is not a stable historical measure. Any analysis involving popularity must consider that older tracks are structurally disadvantaged.
 
-5. **Experience-Performance relationship**: @fig-scatter-experience-performance clearly shows a positive linear relationship, with more experienced individuals tending to have higher performance scores. The correlation coefficient is `{python} f'{corr:.2f}'`.
+5. Popularity Trends by Gender Evolve Over Time
+Figure @fig-popularity-gender-decade shows that both male and female artists follow similar popularity trends across decades, with lower popularity in the 1970s and early 2000s and sharp increases in recent years. Non-binary artists appear only in the last two decades, with high popularity values reflecting small sample size.
 
-   **Interpretation**: The linear relationship visible in the scatter plot confirms that experience has a consistent, positive effect on performance. However, the substantial scatter around the regression line indicates that experience alone doesn't determine performance - individual differences and other factors play important roles. This suggests that while experience is valuable, organizations shouldn't rely solely on it when making hiring or promotion decisions.
+Interpretation:
+Popularity differences across gender groups generally mirror decade-level patterns rather than diverging strongly within decades. This suggests that era effects —not gender—primarily drive popularity fluctuations.
+This supports the idea that gender is not a major determinant of popularity once decade effects are accounted for. It also reinforces the need for multivariate testing in the Analysis section.
+
+6. Numeric Variables Show No Meaningful Correlations
+The correlation matrix in @fig-corr-matrix reveals near-zero correlations among track_popularity, duration_ms, and release_year.
+
+Interpretation:
+Track length does not predict popularity.
+Release year has an extremely weak relationship with both popularity and song duration.
+These weak correlations confirm that numeric variables pose no multicollinearity concerns for future modeling.
+This supports the use of statistical methods that assume independence between predictors and informs variable selection for later regression or ANOVA models.
 
 ::: {.callout-warning}
 
