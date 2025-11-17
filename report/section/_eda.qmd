@@ -214,194 +214,196 @@ for var in numeric_vars:
 ```
 :::
 
-## Bivariate Analysis
+# Bivariate Analysis
 
-Explore relationships between two variables.
+After examining each variable individually, we now explore how they relate to each other.  
+In particular, we focus on:
 
-Our univariate analysis in @fig-performance-dist revealed that performance scores follow an approximately normal distribution with a mean of 0.90. The box plot (@fig-performance-box) confirmed this finding and helped identify a few outliers at the lower end of the distribution.
+- how gender representation changes across decades,  
+- how gender is distributed across genres, and  
+- how popularity varies across gender categories.
 
-::: {.callout-tip}
-## How to Reference Figures
+These relationships are central to our research question:  
+**How has the diversity of artists evolved in top charts over time, and how is it reflected across genres and popularity levels?**
+Our research focuses on relationships between:
+- gender × decade
+- gender × genre
+- gender × popularity
+- popularity × release year
 
-Use `@fig-label` syntax to reference figures in your text. Quarto automatically numbers them and creates clickable links.
+These help evaluate how gender representation and popularity metrics evolve across time and musical categories.
+::: 
 
-**Examples with figures in this template:**
-
-- `@fig-performance-dist` → See @fig-performance-dist for details
-- `@fig-correlation-matrix` → As shown in @fig-correlation-matrix
-- `@tbl-anova-test` → The ANOVA results in @tbl-anova-test
-
-**Why reference figures?**
-
-1. Automatic numbering (updates if you reorder)
-2. Clickable links in HTML output
-3. Professional academic writing standard
-4. Helps readers find the relevant visualization
-
-**Example usage in text:**
-
-"The distribution shown in @fig-performance-dist indicates..."
-
-"As seen in @fig-correlation-matrix, there is a strong positive correlation..."
-:::
-
-Now let's examine how performance varies across different instructors.
-
-::: {.panel-tabset}
-
-## Grouped Comparison
-
+## Gender Distribution Across Decades
 ```{python}
-#| label: fig-performance-by-instructor
-#| fig-cap: "Performance scores grouped by instructor showing variation across instructors"
-# Code visibility controlled by format settings in report.qmd
+#| label: fig-gender-decade
+#| fig-cap: "Gender distribution across decades"
+df_decade_gender = df[df["gender"].isin(["male", "female", "non-binary"])]
 
-fig, ax = plt.subplots(figsize=(8, 5))
+plt.figure(figsize=(10, 5))
+sns.countplot(
+    data=df_decade_gender,
+    x="decade",
+    hue="gender",
+    palette="colorblind"
+)
 
-# Violin plot with individual points
-sns.violinplot(data=dummy_performance, x="instructor", y="performance",
-               ax=ax, inner="box", palette="Set2", linewidth=1.5,
-               edgecolor='black')
-
-# Overlay individual points
-sns.swarmplot(data=dummy_performance, x="instructor", y="performance",
-              ax=ax, color='black', alpha=0.3, size=3)
-
-# Customize
-ax.set_title("Performance Scores by Instructor",
-             fontsize=14, fontweight='bold', pad=15)
-ax.set_xlabel("Instructor", fontsize=12)
-ax.set_ylabel("Performance Score", fontsize=12)
-ax.grid(True, axis='y', alpha=0.3, linestyle='--')
-
+plt.title("Gender Distribution Across Decades")
+plt.xlabel("Decade")
+plt.ylabel("Number of Tracks")
+plt.xticks(rotation=45)
+plt.legend(title="Gender")
 plt.tight_layout()
 plt.show()
 ```
+Interpretation: As shown in @fig-gender-decade, gender representation in Billboard-charting tracks has changed substantially across decades. Male artists consistently dominate every decade, although the gap between male and female artists narrows noticeably starting in the 1980s. Female representation increases steadily from the 1980s onward, reaching its highest levels in the 2010s and 2020s.
+Non-binary artists appear only in the most recent decades and remain extremely rare.
 
-## Statistical Test
+These patterns suggest that gender diversity in popular music has improved over time, but remains unequal.
+The strong male dominance in earlier decades reflects historical industry barriers that limited female participation in mainstream music production and promotion.
+The rise in female artists from the 1980s onward aligns with broader cultural and industry shifts—such as increased visibility, market demand, and improved professional opportunities for women.
+The emergence of non-binary artists in the 2010s and 2020s likely reflects changing social norms, greater recognition of gender diversity, and improved availability of metadata documenting non-binary identities.
 
+Implications for Our Research Questions
+Has gender representation among charting artists become more diverse over time?
+The increasing presence of female and non-binary artists supports the hypothesis that representation is improving, although the persistent male majority shpws that gender equality has not yet been achieved.
+
+In the original dataset, a large number of artists had gender = "unknown" due to incomplete metadata from external sources. Including these entries would have made the chart difficult to interpret, because “Unknown” does not represent a gender category, but missing information. Its large size would artificially inflate some decades and hide real gender patterns. It would distort comparisons of gender proportions over time. Therefore, for this visualization, only male, female, and non-binary artists were included so that the plot accurately reflects trends among artists whose gender is known.
+
+We will still acknowledge the presence of “unknown” in the limitations section, because missing gender information may bias the observed distribution.
+
+## Gender Representation Across Top 10 Genres
 ```{python}
-#| label: tbl-anova-test
-#| tbl-cap: "ANOVA test results for performance differences across instructors"
-# Code visibility controlled by format settings in report.qmd
+#| label: fig-gender-top-genres
+#| fig-cap: "Gender Representation Across Top 10 Genres"
+df_gender = df[df["gender"].isin(["male", "female", "non-binary"])]
 
-from scipy import stats
+df_gender = df_gender[df_gender["genre"] != "unknown"]
 
-# Group data by instructor
-groups = [group["performance"].values
-          for name, group in dummy_performance.groupby("instructor")]
+top_genres = df_gender["genre"].value_counts().head(10).index
 
-# Perform ANOVA
-f_stat, p_value = stats.f_oneway(*groups)
+df_top = df_gender[df_gender["genre"].isin(top_genres)]
 
-print("\n=== ANOVA Test Results ===")
-print(f"F-statistic: {f_stat:.4f}")
-print(f"P-value: {p_value:.4f}")
-print(f"\nInterpretation: {'Significant' if p_value < 0.05 else 'Not significant'} difference at α=0.05")
-
-# Group means
-print("\n=== Group Means ===")
-print(dummy_performance.groupby("instructor")["performance"].mean().to_string())
-```
-
-:::
-
-::: {.callout-important}
-## Plot Quality Requirements
-
-Every plot in your report should have:
-
-✓ **Clear title** that explains what's being shown
-✓ **Labeled axes** with units when applicable
-✓ **Legend** if multiple groups/series are shown
-✓ **Appropriate color scheme** (colorblind-friendly)
-✓ **Proper sizing** (readable text, not too small/large)
-✓ **Figure caption** using `fig-cap` option
-
-**Poor plots = Poor grades!** Take time to make your visualizations publication-quality.
-:::
-
-## Correlation Analysis
-
-::: {.panel-tabset}
-
-## Correlation Heatmap
-
-```{python}
-#| label: fig-correlation-matrix
-#| fig-cap: "Correlation matrix showing relationships between numeric variables"
-# Code visibility controlled by format settings in report.qmd
-
-# Create dummy dataset with multiple numeric variables
-np.random.seed(42)
-n = 200
-dummy_data = pd.DataFrame({
-    'Age': np.random.randint(20, 60, n),
-    'Experience': np.random.randint(0, 30, n),
-    'Performance': np.random.normal(0.85, 0.1, n).clip(0, 1),
-    'Salary': np.random.normal(60000, 20000, n)
-})
-
-# Add some correlations
-dummy_data['Salary'] = 40000 + dummy_data['Experience'] * 1000 + np.random.normal(0, 5000, n)
-dummy_data['Performance'] = 0.6 + dummy_data['Experience'] * 0.01 + np.random.normal(0, 0.1, n)
-dummy_data['Performance'] = dummy_data['Performance'].clip(0, 1)
-
-# Calculate correlation matrix
-corr_matrix = dummy_data.corr()
-
-# Create heatmap
-fig, ax = plt.subplots(figsize=(7, 6))
-sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0,
-            square=True, linewidths=1, cbar_kws={"shrink": 0.8},
-            fmt='.3f', ax=ax, vmin=-1, vmax=1)
-
-ax.set_title("Correlation Matrix of Numeric Variables",
-             fontsize=14, fontweight='bold', pad=15)
-
+plt.figure(figsize=(10, 5))
+sns.countplot(data=df_top, x="genre", hue="gender", palette="colorblind")
+plt.title("Gender Representation Across Top 10 Genres")
+plt.xlabel("Genre")
+plt.ylabel("Number of Tracks")
+plt.xticks(rotation=45)
+plt.legend(title="Gender")
 plt.tight_layout()
 plt.show()
 ```
+Interpretation: As shown in @fig-gender-top-genres, the distribution of gender categories across the ten most frequent genres reveals clear patterns in representation. After removing the "unknown" category to avoid misleading proportions (because unknown entries come from missing metadata rather than meaningful gender categories), the visualization provides a cleaner and more interpretable picture of gender diversity in popular music genres.
 
-## Scatter Plot
+Across nearly all top genres, male artists dominate, often making up the largest proportion of tracks within each genre.
+Female artists appear consistently but in noticeably smaller numbers, and non-binary artists are extremely rare, appearing only in one or two genres with minimal counts. Some genres—such as pop and R&B—show a more balanced representation between male and female artists, while others—such as rap or rock—show a strong male majority.
 
+The Story Behind the Pattern, these patterns reflect long-standing gender dynamics within the music industry:
+- Male dominance in genres like rap and rock aligns with historical trends where these genres have been male-led spaces, often influenced by cultural norms and industry barriers.
+- More balanced representation in pop and R&B suggests that these genres have traditionally offered more visibility and commercial opportunities for women.
+The near absence of non-binary artists highlights both the recent recognition of non-binary identities and a lack of industry representation historically.
+
+Understanding these disparities is essential for interpreting broader trends in artist visibility and chart success. If certain genres inherently skew male or female, then comparing gender representation without accounting for genre would give a distorted picture. This analysis shows that gender representation is genre-dependent, which we must consider in any follow-up statistical analyses—especially when examining popularity or career trends.
+
+To make the analysis meaningful and avoid distortions, we restricted the visualization to the Top 10 most common genres in the dataset. Many genres outside the top 10 appear only a handful of times, which would introduce noise and make cross-gender comparisons unreliable. Additionally, we excluded the “unknown” genre category, since it reflects missing or incomplete metadata rather than a real musical classification. Removing these entries ensures that the chart focuses on genuine genre categories and provides a clearer, more interpretable picture of how gender representation varies across the most relevant segments of the dataset.
+
+## Track Popularity by Gender Category
 ```{python}
-#| label: fig-scatter-experience-performance
-#| fig-cap: "Scatter plot showing positive relationship between experience and performance"
-# Code visibility controlled by format settings in report.qmd
+df_gender = df[df["gender"].isin(["male", "female", "non-binary"])]
 
-fig, ax = plt.subplots(figsize=(8, 5))
-
-# Scatter plot with regression line
-sns.regplot(data=dummy_data, x='Experience', y='Performance',
-            ax=ax, scatter_kws={'alpha': 0.5, 's': 50, 'edgecolor': 'black'},
-            line_kws={'color': 'red', 'linewidth': 2})
-
-ax.set_title("Experience vs Performance",
-             fontsize=14, fontweight='bold', pad=15)
-ax.set_xlabel("Years of Experience", fontsize=12)
-ax.set_ylabel("Performance Score", fontsize=12)
-ax.grid(True, alpha=0.3, linestyle='--')
-
-# Add correlation coefficient
-corr = dummy_data['Experience'].corr(dummy_data['Performance'])
-ax.text(0.05, 0.95, f'Correlation: {corr:.3f}',
-        transform=ax.transAxes, fontsize=11,
-        verticalalignment='top',
-        bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
-
+plt.figure(figsize=(10, 5))
+sns.boxplot(data=df_gender, x="gender", y="track_popularity", palette="colorblind")
+plt.title("Track Popularity by Gender Category")
+plt.xlabel("Gender")
+plt.ylabel("Track Popularity (0–100)")
+plt.grid(axis='y', linestyle='--', alpha=0.4)
 plt.tight_layout()
 plt.show()
 ```
+Interpretation: 
+
+## Average Track Popularity Across Decades
+```{python}
+df_clean = df[(df["gender"].isin(["male", "female", "non-binary"])) &
+              (df["release_year"] >= 1900)]
+
+if "decade" not in df_clean.columns:
+    df_clean["decade"] = (df_clean["release_year"] // 10) * 10
+
+decade_popularity = df_clean.groupby("decade")["track_popularity"].mean().reset_index()
+
+plt.figure(figsize=(10, 5))
+sns.lineplot(data=decade_popularity, x="decade", y="track_popularity", marker="o")
+plt.title("Average Track Popularity Across Decades")
+plt.xlabel("Decade")
+plt.ylabel("Average Popularity (0–100)")
+plt.grid(axis='y', linestyle='--', alpha=0.4)
+plt.tight_layout()
+plt.show()
+```
+Interpretation: 
+
+## Average Track Popularity by Gender Across Decades
+```{python}
+df_clean = df[(df["gender"].isin(["male", "female", "non-binary"])) &
+              (df["release_year"] >= 1900)]
+
+if "decade" not in df_clean.columns:
+    df_clean["decade"] = (df_clean["release_year"] // 10) * 10
+
+gender_decade_pop = (
+    df_clean.groupby(["decade", "gender"])["track_popularity"]
+    .mean()
+    .reset_index()
+)
+
+plt.figure(figsize=(10, 5))
+sns.lineplot(
+    data=gender_decade_pop,
+    x="decade",
+    y="track_popularity",
+    hue="gender",
+    marker="o",
+    palette="colorblind"
+)
+
+plt.title("Average Track Popularity by Gender Across Decades")
+plt.xlabel("Decade")
+plt.ylabel("Average Track Popularity")
+plt.grid(axis="y", linestyle="--", alpha=0.4)
+plt.tight_layout()
+plt.show()
+```
+Interpretation: 
+
+## Correlation Analysis (Numeric Variables)
+- track_popularity
+- duration_ms
+- release_year
+```{python}
+numeric_df = df[["track_popularity", "duration_ms", "release_year"]]
+
+corr = numeric_df.corr()
+
+plt.figure(figsize=(7,6))
+sns.heatmap(
+    corr,
+    annot=True,
+    cmap="coolwarm",
+    center=0,
+    linewidths=0.5,
+    fmt=".2f"
+)
+plt.title("Correlation Matrix of Numeric Variables", fontsize=14)
+plt.tight_layout()
+plt.show()
+```
+Interpretation: 
 
 :::
 
 ## Key Findings
-
-**Remember: Interpretation is more important than the plots themselves!** Each finding below not only states *what* we observe but also *why* it matters and *what* it means for our analysis.
-
-Summarize the main insights from your exploratory analysis. **Always reference your figures when discussing findings and provide thorough interpretation!**
-
 1. **Distribution patterns**: The performance scores shown in @fig-performance-dist follow an approximately normal distribution with a mean of `{python} f'{dummy_performance["performance"].mean():.2f}'` and standard deviation of `{python} f'{dummy_performance["performance"].std():.2f}'`.
 
    **Interpretation**: This normal distribution suggests that most students perform around the average, with fewer students at the extremes (very high or very low scores). The relatively small standard deviation indicates consistent performance across the group. This pattern is typical in educational settings and suggests that the assessment was well-calibrated meaning not too easy (which would cause ceiling effects) nor too difficult (which would cause floor effects). The normality assumption also validates the use of parametric statistical tests for subsequent analyses.
@@ -433,34 +435,4 @@ Summarize the main insights from your exploratory analysis. **Always reference y
 
 **Good interpretation (observation + story):** "The histogram shows a normal distribution (mean = 0.90, sd = 0.05), which indicates consistent performance across students. This pattern validates the use of parametric statistical tests in our subsequent analysis. The tight distribution suggests the assessment was well-calibrated, effectively distinguishing between ability levels without ceiling or floor effects that would compress scores."
 
-**Remember:**
-
-- **Observation** = What you see in the data/plot
-- **Interpretation** = The story behind it - what it means, why it matters, what implications it has
-- **Always do both!** State the observation, then interpret its significance.
-:::
-
-::: {.callout-warning}
-## Common Mistake: Not Referencing Figures
-
-**Bad:** "The histogram shows a normal distribution."
-**Good:** "As shown in @fig-performance-dist, the histogram reveals a normal distribution."
-
-**Why?**
-
-- Helps readers locate the relevant visualization
-- Creates professional, academic-style writing
-- Enables automatic figure numbering and links
-:::
-
-::: {.callout-tip}
-## From EDA to Analysis
-
-Use your EDA findings to:
-
-- **Refine research questions** based on observed patterns
-- **Select appropriate statistical methods** based on data distributions
-- **Identify variables** for inclusion in models
-- **Justify transformations** (e.g., log transform for skewed data)
-- **Set expectations** for what you might find in formal analysis
 :::
