@@ -126,6 +126,7 @@ We performed several preprocessing steps to ensure data quality. These included:
 ## Documenting Our Transformations
 1. Clean column names: Ensures consistency and avoids errors in referencing columns in analysis.
 ```{python}
+#| eval: false
 import pandas as pd
 
 COLS = {
@@ -139,6 +140,7 @@ COLS
 ```
 2. Handling missing values: Missing values can break numeric operations or models.
 ```{python}
+#| eval: false
 import pandas as pd
 # Text
 text_cols = ['artist_names', 'track_name', 'album_name', 'genre', 'album_release_date', 'gender']
@@ -158,12 +160,14 @@ print(df.head())
 ```
 3. Standardizing text and categorical variables: Categorical/text fields may need consistent formatting.
 ```{python}
+#| eval: false
 # Remove spaces and convert to lowercase
 df['artist'] = df['artist_names'].str.strip().str.title()
 df['track_name'] = df['track_name'].str.strip().str.lower()
 ```
 4. Transforming dates and numeric fields: Proper datetime objects allow easy date calculations, filtering, and feature extraction.
 ```{python}
+#| eval: false
 # Dates → proper datetime + helper year column
 df[COLS["album_release_date"]] = pd.to_datetime(
     df[COLS["album_release_date"]], errors="coerce", utc=True
@@ -172,6 +176,7 @@ df["release_year"] = df[COLS["album_release_date"]].dt.year
 ```
 5. Validating consistency across merged sources: Ensures transformations did not introduce errors.
 ```{python}
+#| eval: false
 print(df.head())  # shows the first 5 rows
 print(df.info())  # shows column types and missing counts
 print(df.isnull().sum()) # shows how many missing values are in each column
@@ -195,6 +200,7 @@ By applying these imputation strategies:
 - Categorical analyses can proceed without errors, with missing values clearly flagged as 'unknown'.
 This approach provides a reproducible, consistent, and practical solution for handling missing data, allowing reliable downstream analysis while maintaining data integrity.
 ```{python}
+#| eval: false
 # Impute missing numeric values with 0 to ensure calculations and type conversions work
 df['track_popularity'] = df['track_popularity'].fillna(0).astype('int64')
 # Convert album release date to datetime (invalid dates become 'unknown')
@@ -215,6 +221,7 @@ Retaining them is consistent with our research objectives, as these extreme valu
 - Statistical methods: IQR-based thresholds
 - Domain knowledge validation: distinguishing real extremes from errors
 ```{python}
+#| eval: false
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
