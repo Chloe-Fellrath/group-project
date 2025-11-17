@@ -5,6 +5,8 @@ In this step, each key variable is examined individually to understand its distr
 By analyzing variables one at a time, we gain a clearer view of how each behaves independently before exploring relationships between them. For our project, we focus on four main variables—track_popularity, genre, gender, and release_year—as they form the foundation of our subsequent analyses.
 Examining these variables separately allows us to highlight meaningful patterns, detect irregularities, and better justify the methodological choices we make in the later stages of the study.
 ```{python}
+#| label: fig-loading_data
+#| fig-cap: "Overview of the dataset"
 ##Loading the data set for an overview of the dataset
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,10 +18,10 @@ sns.set_theme(style="whitegrid", context="notebook",
 
 df = pd.read_csv("cleaned_final_dataset.csv")
 
-df.head() # shows the first 5 rows of the dataset
-df.tail() # shows the 5 last rows preview
-df.shape # shows the dimension of the dataset
-df.dtypes # check the structure of the data
+df.head()       # shows the first 5 rows of the dataset
+df.tail()       # shows the 5 last rows preview
+df.shape        # shows the dimension of the dataset
+df.dtypes       # check the structure of the data
 df.isna().sum() # check if there is some missing value (no missing values found)
 ```
 Since the dataset is complete, we can proceed directly with feature-level analysis and explore patterns in musical characteristics.
@@ -33,8 +35,8 @@ To recall we have chosen 4 key variables that will help us through our analysis:
 ## Distribution Plots
 ### Distribution of popularity
 ```{python}
-#| label: fig-performance-dist
-#| fig-cap: "Distribution of performance scores showing approximately normal distribution"
+#| label: fig-popularity
+#| fig-cap: "Distribution of the Popularity of tracks"
 # Set publication-quality style
 sns.set_theme(style="whitegrid", context="notebook",
               palette="colorblind", font_scale=1.1)
@@ -50,6 +52,8 @@ This pattern reflects how Spotify calculates popularity: it is not based on hist
 This skewness highlights an important limitation of the variable: popularity on Spotify captures present-day relevance, not long-term cultural impact. This will be important to consider when interpreting trends over time or comparing older and newer releases.
 ### Distribution of genre
 ```{python}
+#| label: fig-genre
+#| fig-cap: "Distribution of Genre"
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -99,6 +103,8 @@ The gender distribution contains four categories: male, female, group, non-binar
 This highlights a data limitation: gender information is not always available for every artist, especially older or less documented ones. The group category refers to musical groups or bands; these may consist of only men, only women, or mixed members. We chose not to classify groups further by internal composition, as this would require additional assumptions and introduce classification uncertainty.
 Finally, the non-binary category represents a very small proportion of the dataset. This reflects both the relatively recent visibility of non-binary artists in mainstream music databases and the historical lack of representation in the industry. Overall, this distribution illustrates both structural biases in data collection and broader social dynamics within the music industry.
 ```{python}
+#| label: fig-gender
+#| fig-cap: "Distribution of Genders"
 sns.set_theme(style="whitegrid", context="notebook",
               palette="colorblind", font_scale=1.1)
 plt.figure(figsize=(8,5))
@@ -111,6 +117,8 @@ plt.show()
 This missing gender information must be acknowledged because it affects the interpretation of all gender-related analyses. Any comparison between male, female, non-binary, and group artists will be biased if ‘unknown’ forms such a large segment.
 For this reason, descriptive statistics and statistical tests should be conducted both including and excluding the ‘unknown’ category, depending on the research question.
 ```{python}
+#| label: fig-gender-bi
+#| fig-cap: "Distribution of Gender (Men and Women)"
 # Filter only men and women
 df_binary_gender = df[df["gender"].isin(["male", "female"])]
 
@@ -124,11 +132,13 @@ plt.xlabel("Gender")
 plt.ylabel("Count")
 plt.show()
 ```
-For this additional visualization, we filtered the dataset to include only male and female solo-artists in order to observe the distribution between these two majority groups.
+For this additional visualization @fig-gender-bi, we filtered the dataset to include only male and female solo-artists in order to observe the distribution between these two majority groups.
 Entries labeled “unknown” or “non-binary” were excluded from this plot but are still considered in the global analysis.
 
 ###Distribution of the release year
 ```{python}
+#| label: fig-release-year
+#| fig-cap: "Distribution of Release Year"
 plt.figure(figsize=(10,5))
 sns.histplot(df["release_year"], bins=5)
 plt.title("Distribution of release years")
@@ -141,6 +151,8 @@ Additionally, Spotify’s API does not always provide a release year for older r
 Consequently, the temporal distribution should be interpreted with caution, as the representation of earlier decades is incomplete and may not accurately reflect the true musical output of those periods.
 To facilitate clearer temporal analysis, we create a new variable grouping tracks by decade, which smooths out year-to-year inconsistencies.
 ```{python}
+#| label: fig-release-year
+#| fig-cap: "Distribution of Release Year by Decades"
 ##Distribution of decades
 # Create decade variable from release_year
 df["decade"] = (df["release_year"] // 10) * 10
@@ -166,7 +178,7 @@ The summary statistics provide an overview of our key variables. Numeric variabl
 Categorical variables (genre and gender) show the distribution of categories (see distribution above) and highlight the most common groups. Box plots and bar plots complement the statistics, making it easier to visualize distribution patterns and understand the dataset at a glance.
 ```{python}
 #| label: tbl-summary-stats
-#| tbl-cap: "Summary statistics for performance scores"
+#| tbl-cap: "Summary statistics for key Variables"
 # Code visibility controlled by format settings in report.qmd
 
 import matplotlib.pyplot as plt
