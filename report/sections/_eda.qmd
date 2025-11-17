@@ -1,4 +1,10 @@
 # EDA
+format:
+  pdf:
+    include-in-header:
+      text: |
+        \usepackage{fvextra}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breakanywhere}
 
 ## Univariate Analysis
 In this step, each key variable is examined individually to understand its distribution, central tendency, and overall spread. This approach helps us identify important characteristics such as skewness, outliers, common categories, and temporal patterns.
