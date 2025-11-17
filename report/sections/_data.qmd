@@ -75,6 +75,9 @@ For our analysis, we will focus on a subset of these variables as they allow us 
 :::
 
 ```{python}
+#| eval: false
+#| output: true
+
 #| label: load-data
 # Code visibility controlled by format settings in report.qmd
 #| output: true
