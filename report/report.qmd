@@ -1,8 +1,8 @@
 ---
-title: Project Title
+title: Data Science Project
 author:
- - Name I, First Name I
- - Name II, First Name II
+ - Leon, Maria
+ - Fellrath, Chloe
  - Name III, First Name III
 institute: Name of the University
 date: today
@@ -36,6 +36,7 @@ format:
        # wrapping the code also in the pdf (otherwise, it overflows)
     toc: false
     echo: false          # HIDE code completely in PDF
+    code-overflow: wrap
     include-in-header:
       text: |
         \usepackage{fvextra}
