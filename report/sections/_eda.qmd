@@ -255,7 +255,7 @@ These help evaluate how gender representation and popularity metrics evolve acro
 ::: 
 
 ## Gender Distribution Across Decades
-![Gender distribution across decades](images/fig-gender-decade.png){#fig-gender-decade}
+![Gender distribution across decades](report/images/fig-gender-decade.png){#fig-gender-decade}
 ```{python}
 #| eval: false
 df_decade_gender = df[df["gender"].isin(["male", "female", "non-binary"])]
@@ -293,7 +293,7 @@ In the original dataset, a large number of artists had gender = "unknown" due to
 We will still acknowledge the presence of “unknown” in the limitations section, because missing gender information may bias the observed distribution.
 
 ## Gender Representation Across Top 10 Genres
-![Gender representation across top 10 genres](images/fig-gender-top-genres.png){#fig-gender-top-genres}
+![Gender representation across top 10 genres](report/images/fig-gender-top-genres.png){#fig-gender-top-genres}
 ```{python}
 #| eval: false
 df_gender = df[df["gender"].isin(["male", "female", "non-binary"])]
@@ -329,7 +329,7 @@ Understanding these disparities is essential for interpreting broader trends in 
 To make the analysis meaningful and avoid distortions, we restricted the visualization to the Top 10 most common genres in the dataset. Many genres outside the top 10 appear only a handful of times, which would introduce noise and make cross-gender comparisons unreliable. Additionally, we excluded the “unknown” genre category, since it reflects missing or incomplete metadata rather than a real musical classification. Removing these entries ensures that the chart focuses on genuine genre categories and provides a clearer, more interpretable picture of how gender representation varies across the most relevant segments of the dataset.
 
 ## Track Popularity by Gender Category
-![Track popularity by gender category](images/fig-popularity-gender.png){#fig-popularity-gender}
+![Track popularity by gender category](report/images/fig-popularity-gender.png){#fig-popularity-gender}
 ```{python}
 #| eval: false
 df_gender = df[df["gender"].isin(["male", "female", "non-binary"])]
@@ -353,7 +353,7 @@ Non-binary artists, in contrast, are a relatively recent presence in mainstream 
 This visualization highlights an important methodological point: popularity trends cannot be interpreted independently of release year. Any statistical analysis comparing gender and popularity must account for the fact that non-binary tracks are more recent, and that male and female categories include songs across many decades.
 
 ## Average Track Popularity Across Decades
-![Average track popularity across decades](images/fig-popularity-across-decades.png){#fig-popularity-across-decades}
+![Average track popularity across decades](report/images/fig-popularity-across-decades.png){#fig-popularity-across-decades}
 ```{python}
 #| eval: false
 df_clean = df[(df["gender"].isin(["male", "female", "non-binary"])) &
@@ -384,7 +384,7 @@ The high average popularity in the 1950s is partly driven by the small sample si
 Therefore, this visualization shows that popularity cannot be compared across decades without controlling for release year. Such strong temporal bias means that any statistical analysis examining gender and popularity must include release_year (or decade) as a covariate. Ignoring this effect would lead to misleading conclusions, as differences might reflect temporal streaming patterns rather than gender-based disparities.
 
 ## Average Track Popularity by Gender Across Decades
-![Average popularity by gender across decades](images/fig-popularity-gender-decade.png){#fig-popularity-gender-decade}
+![Average popularity by gender across decades](report/images/fig-popularity-gender-decade.png){#fig-popularity-gender-decade}
 ```{python}
 #| eval: false
 df_clean = df[(df["gender"].isin(["male", "female", "non-binary"])) &
