@@ -4,7 +4,9 @@
 In this step, each key variable is examined individually to understand its distribution, central tendency, and overall spread. This approach helps us identify important characteristics such as skewness, outliers, common categories, and temporal patterns.
 By analyzing variables one at a time, we gain a clearer view of how each behaves independently before exploring relationships between them. For our project, we focus on four main variables—track_popularity, genre, gender, and release_year—as they form the foundation of our subsequent analyses.
 Examining these variables separately allows us to highlight meaningful patterns, detect irregularities, and better justify the methodological choices we make in the later stages of the study.
+```python
 ```{python}
+#| eval: false
 #| label: fig-loading_data
 #| fig-cap: "Overview of the dataset"
 ##Loading the data set for an overview of the dataset
