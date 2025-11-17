@@ -1,12 +1,12 @@
 #Gender Representation in Music
-##*How Has the Diversity of Artists Evolved in Top Charts?*
+## *How Has the Diversity of Artists Evolved in Top Charts?*
 
 ##Introduction
 ### **Abstract**
 This study examines gender representation among artists on the Billboard Top Charts using data enriched with Spotify metadata. We analyze how the presence of women and men artists has changed over time and across genres, and explore the relationship between gender and track popularity.
 Our findings contextualize gender disparities in charting music, highlighting ongoing underrepresentation despite industry efforts to promote diversity. The results provide data-driven insights into structural inequalities in the music industry and inform discussions on representation and visibility.
 
-###**Background**
+### **Background**
 In recent years, discussions about diversity and representation have gained significant visibility across industries. Music plays a central role in modern culture, and platforms like Spotify now collect extensive data on song characteristics and popularity.
 Despite the undeniable impact of women and gender-diverse artists throughout music history, data suggests that gender disparities persist, particularly in production, chart rankings, and streaming exposure. Examining these disparities is crucial to understanding how structural factors influence the music we consume and the artists who gain recognition.
 
@@ -17,7 +17,7 @@ Building on this motivation, our project explores gender representation in music
 By applying data science methods from data acquisition and cleaning to analysis and visualization, we seek to uncover patterns and trends that illustrate how gender diversity among artists has evolved across genres and decades.
 This analysis not only contributes to ongoing discussions about equality in the music industry but also demonstrates how data-driven insights can support social awareness and change.
 
-###**Objectives**
+### **Objectives**
 The project aims to conduct an exploratory data analysis to:
 
 - Quantify the gender distribution of artists in top charts over time using available music datasets.
@@ -25,7 +25,7 @@ The project aims to conduct an exploratory data analysis to:
 - Visualize how the diversity of artists has evolved from the 1960s to the present.
 - Communicate results through clear visualizations and an interpretive analysis grounded in data science methods.
 
-###**Research questions**
+### **Research questions**
 - How has gender representation among music artists evolved over the years?
 - Are there differences in gender representation across genres (e.g., pop, rock, hip-hop)?
 - Is there a relationship between an artist's popularity and gender?
