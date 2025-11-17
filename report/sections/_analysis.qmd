@@ -3,104 +3,76 @@ Our methodological approach so far has focused on building a reliable, consisten
 
 1. Data Cleaning (Completed)
 All cleaning steps were implemented in Python using pandas and are fully documented in our separate cleaning notebook. The main tasks completed include:
-
 ## Removal of duplicate tracks
 Duplicate entries were identified using the `track_id` field. Removing these duplicates ensures that each row corresponds to a unique song and prevents inflated counts in subsequent analyses.
-
 ## Standardization of date formats
 The `album_release_date` column originally contained mixed formats (full dates, partial years, or blanks).  
 We standardized all entries to **YYYY-MM-DD** whenever possible and extracted a consistent **release_year** variable.
 When no date information was available, `"N/A"` was inserted to clearly distinguish missingness. These tracks will be excluded from time-based analyses.
-
 ## Handling of missing values
 Aside from release dates, missing values were limited and did not affect key analytical variables.  
 All missingness was documented, and the dataset now contains no hidden or ambiguous gaps.
-
 ## Cleaning numeric and text fields
 Columns such as `track_popularity` and `duration_ms` were checked for data-type consistency and corrected when necessary.  
 Text fields (artist, track names and album names) were standardized to improve grouping and categorization.
-
-## Creation of derived variables
-Two new variables were added to support time-based analysis:
-- **release_year** (numeric)
-- **decade** (e.g., 1980, 1990, 2000)
-
-These variables will enable long-term comparisons of gender representation across the chart history.
-
 ## Verification of the final dataset
 We performed final validation checks, confirming that:
 - no duplicate tracks remain  
 - data types are correct  
 - missing values are limited and documented  
-- all new variables are correctly generated  
 
 The cleaned dataset is stored in our GitHub repository as  
 **`cleaned_final_dataset.csv`**.
 
+# Preliminary Analysis
+Based on the exploratory data analysis, several clear patterns emerged regarding gender representation across decades, genres, and popularity levels. The purpose of the preliminary analysis is to connect these initial findings to the statistical methods that will help confirm, quantify, or further investigate the observed trends. The methods outlined below were selected in response to the structure of the data and the behaviors identified during EDA.
 
-2. Planned Exploratory Analysis
-With the cleaned dataset finalized, the next phase involves conducting structured exploratory data analysis. Planned components include:
-- summary statistics (counts, proportions, distributions)  
-- visualizations of gender representation across decades  
-- genre-level comparisons of gender categories  
-- examination of popularity differences between gender groups  
+1. Gender Representation Over Time
+Our EDA revealed a consistent dominance of male artists across all decades, despite slight increases in female and mixed-gender representation in more recent years. Because these trends appear systematic, we plan to use statistical methods to formally test whether decade and gender are associated.
 
-These steps will help identify major trends and guide the choice of statistical methods for confirmatory analysis.
+Planned methods:
+- Cross-tabulation of gender × decade
+- Chi-square test of independence to assess whether gender proportions differ significantly across decades
+If expected frequencies are low for minority gender categories (e.g., non-binary), we will use Monte Carlo chi-square or Fisher-type alternatives
 
-3. Statistical Approach (Planned)
-Although modeling has not yet been performed, we have outlined the methodological strategy that will guide the later stages of the project.
+Rationale:
+These methods allow us to determine whether the shift in representation seen visually is statistically meaningful rather than random variation.
 
-##Gender Representation Over Time
-To examine how gender proportions evolve across decades, we will use:
-- line charts showing gender trends  
-- grouped bar plots  
+2. Gender Differences Across Genres
+The EDA showed that certain genres—especially Pop, Rock, and Hip-Hop—remain heavily dominated by male artists, whereas female and mixed-gender artists are more present in genres like Dance/Electronic and Latin. These patterns suggest possible structural differences across genres.
 
-These descriptive methods will provide a clear view of long-term representation patterns.
+Planned methods:
+- Gender × Genre cross-tabulation
+- Chi-square test of independence to evaluate genre–gender association
 
-## Gender Differences Across Genres
-To assess whether gender representation varies by genre, we plan to use:
-- cross-tabulations  
-- appropriate statistical tests for associations (e.g., chi-square) if assumptions are met  
+Rationale:
+Since both variables are categorical, chi-square is the most appropriate starting point to test whether observed patterns reflect statistically significant disparities in representation.
 
-This will allow us to evaluate whether certain genres consistently favor or exclude certain gender groups.
+3. Popularity and Gender
+Our EDA indicated that average track popularity is quite similar across genders, though small differences appear in certain decades. The variability across time suggests that popularity may depend not only on gender but also on release year.
 
-## Popularity and Gender
-To explore whether popularity differs by gender, we plan to consider:
-- comparison tests (t-tests or non-parametric equivalents)  
-- ANOVA if multiple groups are involved  
-- simple regression models (popularity ~ gender + year) if appropriate  
+Planned methods:
+- Group comparison tests
+- t-test or Mann–Whitney test (e.g., male vs. female)
+- ANOVA (if comparing > 2 gender categories)
 
-These analyses will help quantify whether observed differences in popularity are statistically meaningful.
+Regression modeling
+Model structure: popularity ~ gender + release_year
+Allows us to control for the strong time dependency identified during cleaning and correlation analysis
 
-## Rationale
-These methods were selected because they:
-- align directly with our three research questions  
-- are appropriate for categorical vs. numeric relationships  
-- are standard and interpretable within social-science and music-industry contexts  
-- can be adapted depending on sample sizes and assumption checks  
+Rationale:
+These methods will confirm whether the small differences seen visually are statistically meaningful and whether gender predicts popularity once time is accounted for.
 
-This staged approach ensures that our final analysis will be statistically sound, transparent, and well-justified.
+4. Correlation and Numeric Relationships
+The preliminary correlation matrix revealed weak or negligible correlations among numeric variables (track duration, release year, popularity). This suggests:
+No risk of multicollinearity in simple regression models
+No strong linear relationships that bias later analyses
+Thus, regression models including release_year remain appropriate and statistically valid.
 
----
-
-# Analysis
-At this stage, our analysis has focused on validating the cleaned dataset and ensuring that it is ready for deeper exploration.
-
-## Initial Checks
-Once the cleaned dataset was imported, we performed the following checks:
-- confirmed the dataset dimensions  
-- verified that all duplicate tracks were removed  
-- ensured that missing values were limited and correctly labeled  
-- validated the standardized date formats  
-- confirmed correct creation of `release_year` and `decade` variables  
-
-These checks confirm that the dataset is ready for accurate visualization and statistical analysis.
-
-## Early Observations
-Although full EDA has not yet been conducted, several early patterns emerged from initial inspections:
-- The dataset spans multiple decades, enabling meaningful long-term comparisons.
-- Numeric variables (e.g., popularity, duration) are clean and consistently formatted.
-- Missing values are concentrated in the release-date column and will not affect non-temporal analyses.
-- Text fields are standardized, making them reliable for grouping by genre or artist.
-
-These observations indicate that the data-cleaning phase was successful and that the dataset is well-prepared for the next analytical steps.
+5. Summary of Preliminary Findings Informing the Model Choices
+Based on EDA, we identified:
+- Strong categorical patterns → appropriate for chi-square tests
+- Subtle numeric differences → appropriate for t-tests, ANOVA, or non-parametric tests
+- Temporal effects → regression models with year controls
+- Weak correlations → simple, interpretable statistical models are sufficient
+These observations ensure that the upcoming analyses will be grounded in data-driven reasoning and aligned with methodological best practices.
