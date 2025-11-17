@@ -247,6 +247,7 @@ These help evaluate how gender representation and popularity metrics evolve acro
 ::: 
 
 ## Gender Distribution Across Decades
+![Gender distribution across decades](fig-gender-decade.png){#fig-gender-decade}
 ```{python}
 #| label: fig-gender-decade
 #| fig-cap: "Gender distribution across decades"
