@@ -4,7 +4,6 @@
 In this step, each key variable is examined individually to understand its distribution, central tendency, and overall spread. This approach helps us identify important characteristics such as skewness, outliers, common categories, and temporal patterns.
 By analyzing variables one at a time, we gain a clearer view of how each behaves independently before exploring relationships between them. For our project, we focus on four main variables—track_popularity, genre, gender, and release_year—as they form the foundation of our subsequent analyses.
 Examining these variables separately allows us to highlight meaningful patterns, detect irregularities, and better justify the methodological choices we make in the later stages of the study.
-```python
 ```{python}
 #| eval: false
 #| label: fig-loading_data
@@ -37,6 +36,7 @@ To recall we have chosen 4 key variables that will help us through our analysis:
 ## Distribution Plots
 ### Distribution of popularity
 ```{python}
+#| eval: false
 #| label: fig-popularity
 #| fig-cap: "Distribution of the Popularity of tracks"
 # Set publication-quality style
@@ -54,6 +54,7 @@ This pattern reflects how Spotify calculates popularity: it is not based on hist
 This skewness highlights an important limitation of the variable: popularity on Spotify captures present-day relevance, not long-term cultural impact. This will be important to consider when interpreting trends over time or comparing older and newer releases.
 ### Distribution of genre
 ```{python}
+#| eval: false
 #| label: fig-genre
 #| fig-cap: "Distribution of Genre"
 import matplotlib.pyplot as plt
@@ -105,6 +106,7 @@ The gender distribution contains four categories: male, female, group, non-binar
 This highlights a data limitation: gender information is not always available for every artist, especially older or less documented ones. The group category refers to musical groups or bands; these may consist of only men, only women, or mixed members. We chose not to classify groups further by internal composition, as this would require additional assumptions and introduce classification uncertainty.
 Finally, the non-binary category represents a very small proportion of the dataset. This reflects both the relatively recent visibility of non-binary artists in mainstream music databases and the historical lack of representation in the industry. Overall, this distribution illustrates both structural biases in data collection and broader social dynamics within the music industry.
 ```{python}
+#| eval: false
 #| label: fig-gender
 #| fig-cap: "Distribution of Genders"
 sns.set_theme(style="whitegrid", context="notebook",
@@ -119,6 +121,7 @@ plt.show()
 This missing gender information must be acknowledged because it affects the interpretation of all gender-related analyses. Any comparison between male, female, non-binary, and group artists will be biased if ‘unknown’ forms such a large segment.
 For this reason, descriptive statistics and statistical tests should be conducted both including and excluding the ‘unknown’ category, depending on the research question.
 ```{python}
+#| eval: false
 #| label: fig-gender-bi
 #| fig-cap: "Distribution of Gender (Men and Women)"
 # Filter only men and women
@@ -139,6 +142,7 @@ Entries labeled “unknown” or “non-binary” were excluded from this plot b
 
 ###Distribution of the release year
 ```{python}
+#| eval: false
 #| label: fig-release-year
 #| fig-cap: "Distribution of Release Year"
 plt.figure(figsize=(10,5))
@@ -153,6 +157,7 @@ Additionally, Spotify’s API does not always provide a release year for older r
 Consequently, the temporal distribution should be interpreted with caution, as the representation of earlier decades is incomplete and may not accurately reflect the true musical output of those periods.
 To facilitate clearer temporal analysis, we create a new variable grouping tracks by decade, which smooths out year-to-year inconsistencies.
 ```{python}
+#| eval: false
 #| label: fig-release-year
 #| fig-cap: "Distribution of Release Year by Decades"
 ##Distribution of decades
@@ -179,6 +184,7 @@ plt.show()
 The summary statistics provide an overview of our key variables. Numeric variables (release_year and popularity) reveal central tendencies, spread, skewness, and potential outliers.
 Categorical variables (genre and gender) show the distribution of categories (see distribution above) and highlight the most common groups. Box plots and bar plots complement the statistics, making it easier to visualize distribution patterns and understand the dataset at a glance.
 ```{python}
+#| eval: false
 #| label: tbl-summary-stats
 #| tbl-cap: "Summary statistics for key Variables"
 # Code visibility controlled by format settings in report.qmd
@@ -251,6 +257,7 @@ These help evaluate how gender representation and popularity metrics evolve acro
 ## Gender Distribution Across Decades
 ![Gender distribution across decades](images/fig-gender-decade.png){#fig-gender-decade}
 ```{python}
+#| eval: false
 df_decade_gender = df[df["gender"].isin(["male", "female", "non-binary"])]
 
 plt.figure(figsize=(10, 5))
@@ -288,6 +295,7 @@ We will still acknowledge the presence of “unknown” in the limitations secti
 ## Gender Representation Across Top 10 Genres
 ![Gender representation across top 10 genres](images/fig-gender-top-genres.png){#fig-gender-top-genres}
 ```{python}
+#| eval: false
 df_gender = df[df["gender"].isin(["male", "female", "non-binary"])]
 
 df_gender = df_gender[df_gender["genre"] != "unknown"]
@@ -323,6 +331,7 @@ To make the analysis meaningful and avoid distortions, we restricted the visuali
 ## Track Popularity by Gender Category
 ![Track popularity by gender category](images/fig-popularity-gender.png){#fig-popularity-gender}
 ```{python}
+#| eval: false
 df_gender = df[df["gender"].isin(["male", "female", "non-binary"])]
 
 plt.figure(figsize=(10, 5))
@@ -346,6 +355,7 @@ This visualization highlights an important methodological point: popularity tren
 ## Average Track Popularity Across Decades
 ![Average track popularity across decades](images/fig-popularity-across-decades.png){#fig-popularity-across-decades}
 ```{python}
+#| eval: false
 df_clean = df[(df["gender"].isin(["male", "female", "non-binary"])) &
               (df["release_year"] >= 1900)]
 
@@ -376,6 +386,7 @@ Therefore, this visualization shows that popularity cannot be compared across de
 ## Average Track Popularity by Gender Across Decades
 ![Average popularity by gender across decades](images/fig-popularity-gender-decade.png){#fig-popularity-gender-decade}
 ```{python}
+#| eval: false
 df_clean = df[(df["gender"].isin(["male", "female", "non-binary"])) &
               (df["release_year"] >= 1900)]
 
@@ -424,6 +435,7 @@ This could motivate our planned statistical analysis: future models will need to
 
 ![Correlation matrix of numeric variables](images/fig-corr-matrix.png){#fig-corr-matrix}
 ```{python}
+#| eval: false
 #| label: fig-corr-matrix
 #| fig-cap: "Correlation Analysis (Numeric Variables)"
 numeric_df = df[["track_popularity", "duration_ms", "release_year"]]
