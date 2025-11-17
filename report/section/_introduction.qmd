@@ -19,7 +19,6 @@ This analysis not only contributes to ongoing discussions about equality in the 
 
 ### **Objectives**
 The project aims to conduct an exploratory data analysis to:
-
 - Quantify the gender distribution of artists in top charts over time using available music datasets.
 - Examine whether representation varies across genres and popularity levels.
 - Visualize how the diversity of artists has evolved from the 1960s to the present.
