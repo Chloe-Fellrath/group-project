@@ -250,6 +250,8 @@ These help evaluate how gender representation and popularity metrics evolve acro
 ```{python}
 #| label: fig-gender-decade
 #| fig-cap: "Gender distribution across decades"
+from IPython.display import Image
+Image("images/fig_gender_decade.png")
 df_decade_gender = df[df["gender"].isin(["male", "female", "non-binary"])]
 
 plt.figure(figsize=(10, 5))
