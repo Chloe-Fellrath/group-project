@@ -1,4 +1,10 @@
 # Data
+format:
+  pdf:
+    include-in-header:
+      text: |
+        \usepackage{fvextra}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breakanywhere}
 
 ## Sources
 For this project, we are using public and open-source data via Spotify APIs. We selected 8 playlists from the Billboard Year-End Top Charts which we have merged to have only one data frame. Compared to other data sources, we chose APIs because they provide access to a large and varied set of music-related features while allowing greater flexibility and control during the data collection process.
