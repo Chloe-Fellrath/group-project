@@ -428,11 +428,5 @@ Interpretation:
    **Interpretation**: The linear relationship visible in the scatter plot confirms that experience has a consistent, positive effect on performance. However, the substantial scatter around the regression line indicates that experience alone doesn't determine performance - individual differences and other factors play important roles. This suggests that while experience is valuable, organizations shouldn't rely solely on it when making hiring or promotion decisions.
 
 ::: {.callout-warning}
-## Common Mistakes in Interpretation
-
-**Observation (not interpretation):** "The histogram shows a normal distribution."
-**Why it's insufficient:** This only describes what you see - it's an observation, not an interpretation. You need to explain what it *means* and *why it matters*.
-
-**Good interpretation (observation + story):** "The histogram shows a normal distribution (mean = 0.90, sd = 0.05), which indicates consistent performance across students. This pattern validates the use of parametric statistical tests in our subsequent analysis. The tight distribution suggests the assessment was well-calibrated, effectively distinguishing between ability levels without ceiling or floor effects that would compress scores."
 
 :::
