@@ -4,7 +4,7 @@ format:
   html: default
   pdf:
     toc: false
-    echo: false          # hide code in the PDF
+    echo: true          # hide code in the PDF
     code-overflow: wrap  # wrap long code lines
 ---
 
