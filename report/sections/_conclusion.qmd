@@ -1,30 +1,46 @@
 # Conclusion
 
 ## Summary
+This update summarizes the progress made in analyzing gender representation among artists featured in Billboard Top Charts using Spotify metadata. Our work is guided by four research questions addressing how gender representation evolves across time, genres, and popularity levels, and whether certain decades show more progress than others.
 
-This project investigates how gender representation among artists featured in Billboard Top Charts has evolved over time, using track- and artist-level metadata retrieved through the Spotify API. Our research focuses on three main questions:  
-(1) How has the proportion of male, female, and mixed-gender artists changed across decades?  
-(2) Does gender representation vary across musical genres?  
-(3) Are there measurable differences in popularity patterns across gender categories?
+We have now completed a full data-cleaning pipeline and produced a cleaned dataset suitable for structured analysis. A first round of exploratory data analysis (EDA) has been conducted, including descriptive summaries and key visualizations such as gender representation across decades, gender distribution across top genres, and popularity patterns. These early insights validate that the dataset is analytically sound and reveal meaningful preliminary trends that will inform our final modeling choices.
 
-To prepare for this analysis, we completed a full data-cleaning pipeline. This included removing duplicate tracks, standardizing inconsistent release date formats, handling missing values, and creating new variables such as *release_year* and *decade*. 
-These transformations ensure that the dataset—comprising more than 1,200 unique charting tracks—is consistent, interpretable, and suitable for time-based and categorical comparisons. 
-Although the main exploratory data analysis (EDA) and statistical modeling will occur in the next project phase, the cleaned dataset is now fully ready for visual and quantitative exploration of gender diversity in popular music.
+The EDA reveals persistent and consistent gender disparities.
+Across decades, male artists remain the majority, with only modest growth in female representation and very few non-binary artists. Genre-level results show similarly uneven patterns: male artists dominate nearly every major genre, with pop showing the highest—yet still limited—female presence.
+Popularity patterns appear more balanced; distributions for male, female, and non-binary artists show no major systemic differences, suggesting that underrepresentation is due to visibility and exposure rather than lower popularity. Average popularity declines in earlier decades due to Spotify’s recency-weighted metric rather than true historical performance. Finally, the correlation matrix shows weak relationships between numeric variables, confirming minimal multicollinearity and supporting flexible model selection in later stages.
 
-## Limitations
+## Limitations (So Far)
+Our dataset includes several important constraints. 
+- Spotify does not directly provide gender information, requiring us to infer it from external sources like MusicBrainz; this introduces unavoidable uncertainty, especially for groups, collaborative acts, and non-binary artists.
+- Release-date information varies in precision, meaning that tracks with missing or ambiguous dates cannot be included in decade-based analyses.
+- Genre labels, which are algorithmically assigned by Spotify, may not perfectly capture musical style, especially for artists who work across multiple genres.
+- High proportion of “unknown” gender labels, because MusicBrainz does not provide gender information for all artists, some entries remain labeled “unknown.” These cannot be interpreted meaningfully and were therefore excluded from gender-based comparisons. While this avoids biased results, it also reduces effective sample sizes in some decades or genres.
+- Genre classification inconsistencies, Spotify assigns genres at the artist level, not the track level. This introduces mismatches for artists who work across multiple genres or who are classified differently depending on release context. As a result, genre-based analyses must be interpreted cautiously.
+- Popularity metric reflects current streaming activity, not historical success. Older songs, even if they were major hits, often receive very low popularity scores today because the Spotify metric is based on recent listens. This means popularity comparisons across decades inherently reflect differences in present-day streaming behavior rather than true chart performance.
+- Uneven representation across decades and genres. Some decades (early 1960s) and some genres (non–Top 10) have fewer observations. This affects statistical power in those subsets and limits the conclusions that can be drawn.
 
-Several limitations affect our dataset and analysis:
-First, Spotify does not directly provide gender information, requiring us to infer artist gender from external sources. This introduces potential misclassification, especially for collectives, mixed-gender groups, and nonbinary or gender-diverse artists who do not fit traditional categories. 
-Second, release date precision varies: some tracks include full dates while others only list a year or lack a date entirely. We standardized formats where possible, but tracks labeled “N/A” cannot be used in time-based analyses. Additionally, Spotify genre classifications are algorithmic and sometimes inconsistent, which may influence cross-genre comparisons. 
-Finally, our dataset focuses exclusively on Billboard charting songs, meaning our findings reflect commercial exposure and industry dynamics rather than the complete landscape of music production. These limitations do not undermine the analysis but define the context in which our conclusions must be interpreted.
+These limitations do not invalidate the analysis, but they define the boundaries within which statistical interpretations must remain realistic and responsible.
 
 ## Future Work
+For the next phase, we will:
 
-The next phase of the project will involve several concrete steps to deepen the analysis:
+1. Conduct appropriate statistical tests
+Based on the EDA patterns and distributional checks, we will test the association between gender and genre using chi-square (if assumptions hold). Compare popularity across genders using t-tests, ANOVA, or non-parametric alternatives depending on normality and variance checks. Assess temporal trends using grouped means, smoothed trend lines, and decade-level contrasts.
 
-- Conduct full exploratory data analysis (EDA), including descriptive statistics and visualizations that illustrate gender representation across time, genres, and popularity levels. This will allow us to identify key trends before running any statistical tests.
-- Apply appropriate statistical methods based on insights from the EDA. Depending on the structure and distribution of the data, this may include tests for associations between categorical variables or models that examine whether popularity varies across gender categories over time. The final choice of methods will be determined after assessing sample sizes, group balance, and relevant statistical assumptions.
-- Refine and validate our gender categorization, integrating additional external sources when necessary to reduce classification uncertainty—especially for groups and nonbinary artists.
-- Consider expanding the dataset, either by incorporating additional chart sources (e.g., global Spotify charts) or by linking further metadata, which would improve the robustness and generalizability of our findings.
+2. Build a preliminary statistical model
+We plan to explore regression models predicting track popularity from gender and time-related variables (e.g., year or decade). Model diagnostics to ensure assumptions (linearity, homoscedasticity) are met.
+This will allow us to quantify the effect sizes behind the patterns identified in the EDA.
 
-Together, these next steps will enable us to transform our cleaned dataset into a comprehensive and data-driven exploration of gender diversity in popular music.
+3. Integrate statistical results into the narrative
+Combine visual findings and model outputs to answer each research question.
+Highlight whether observed differences are statistically significant or simply descriptive patterns.
+
+5. Strengthen reproducibility and documentation
+- Finalize all code in the main Jupyter notebook.
+- Ensure that every figure used in the Quarto report is saved with a systematic naming convention.
+- Link figures using @fig- IDs for proper referencing in the report.
+
+6. Prepare the final report for submission
+Write cohesive interpretations for each analysis section, ensure that all four research questions are addressed directly, review structure, style, and coherence to maximize clarity and impact.
+
+Collectively, these steps will allow us to transition from exploratory insights to rigorous, statistically supported conclusions in the final stage of the project.
