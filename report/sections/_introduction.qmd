@@ -32,4 +32,13 @@ The project aims to conduct an exploratory data analysis to:
 
 ### **Relevance of This Study**
 This project applies data science techniques—from data cleaning to visualization—to shed light on structural inequalities in the music industry. By analyzing trends in representation, genre distribution, and popularity, we aim to better understand how gender visibility has changed and what patterns persist. This not only supports broader discussions on equity in the creative industries but also demonstrates how computational methods can contribute meaningfully to social analysis.
+
+### **Related Work**
+Epps-Darling et al. (2020) show that women and mixed-gender artists receive less streaming overall, with only slight improvements through recommendation systems. Because Billboard charts incorporate streaming data, these disparities directly relate to our study of chart representation.
+
+Aguiar and Waldfogel (2021) find that Spotify playlists sometimes favor female and independent artists, yet women remain underrepresented across streaming visibility and industry exposure. Their gender-classification approach (MusicBrainz + name-based inference) highlights the metadata challenges we also faced.
+
+Smith et al. (2021) document persistent underrepresentation of women among Billboard artists, songwriters, and producers from 2012–2020, reinforcing that gender inequality in popular music is systemic and long-standing.
+
+Together, these studies show consistent gender disparities across streaming, playlisting, and chart success, providing essential context for our analysis of gender representation in Billboard Top Charts.
 ::: {.callout-tip}
